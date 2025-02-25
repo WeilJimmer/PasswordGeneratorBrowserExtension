@@ -1,0 +1,116 @@
+<!-- popup.html -->
+<!DOCTYPE html>
+<html>
+<head>
+  <title>__MSG_app_title__</title>
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+  <style>
+    body {
+      width: 300px;
+      padding: 16px;
+      font-family: Arial, sans-serif;
+    }
+    .container {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .url-display {
+      word-break: break-all;
+      font-size: 12px;
+      color: #666;
+      padding: 8px;
+      background: #f5f5f5;
+      border-radius: 4px;
+    }
+    .password-container {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px;
+      background: #eef2ff;
+      border-radius: 4px;
+      word-break: break-all;
+    }
+    .password {
+      flex-grow: 1;
+      font-family: 'Courier New', Courier, monospace;
+      font-size: 14px;
+    }
+    .btn {
+      padding: 6px 12px;
+      background: #4f46e5;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .btn:hover {
+      background: #4338ca;
+    }
+    .success-message {
+      color: #059669;
+      font-size: 12px;
+      text-align: center;
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+    .success-message.show {
+      opacity: 1;
+    }
+    .settings {
+      margin-top: 12px;
+      padding-top: 12px;
+      border-top: 1px solid #ddd;
+    }
+    .settings label {
+      display: block;
+      margin-bottom: 4px;
+      font-size: 12px;
+    }
+    .settings input {
+      width: 100%;
+      padding: 4px;
+      margin-bottom: 8px;
+    }
+    .style2 {
+      vertical-align: middle;
+    }
+    small {
+      font-size: 10px;
+      color: #666;
+      font-family: 'Courier New', Courier, monospace;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="url-display" id="currentUrl"></div>
+    <div>
+      <span><input id="lengthValue" value="40" style="width:40px;" type="number" max="100" min="1" onchange="document.getElementById('length').value=this.value"></span>
+      <input class="style2" type="range" id="length" name="length" min="1" max="100" value="40" style="width: calc(100% - 60px);"></div>
+    <div>
+      <input class="style2" type="checkbox" id="numbers" name="numbers" checked="checked"><label for="numbers">數字0-9</label><input class="style2" type="checkbox" id="uppercase" name="uppercase" checked="checked"><label for="uppercase">英文A-Z</label>
+      <input class="style2" type="checkbox" id="lowercase" name="lowercase" checked="checked"><label for="lowercase">英文a-z</label><input class="style2" type="checkbox" id="symbols" name="symbols" checked="checked"><label for="symbols">符號</label>
+    </div>
+    <div><input type="text" class="style2" id="symbols_char" style="width:250px" value="!@#$%^&*(){}[]=,." maxlength="66"></div>
+    <div class="settings">
+      <label for="master_password">Master Password: <small id="checksum_span"></small></label>
+      <input type="password" id="master_password" placeholder="主密碼">
+      <label for="domain">Salt:(版本：<input id="version" value="1" style="width:100px;" type="number" max="9999999" min="1">)</label>
+      <input type="text" id="domain" placeholder="輸入提示詞">
+    </div>
+    <div class="password-container">
+      <div class="password" id="password"></div>
+    </div>
+    <div>
+      <button class="btn" id="copyBtn">複製</button>
+      <button class="btn" id="generateBtn">生成</button>
+    </div>
+    <div class="success-message" id="successMessage">已複製到剪貼簿！</div>
+  </div>
+  <script src="../scripts/state.js"></script>
+  <script src="popup.js"></script>
+</body>
+</html>
