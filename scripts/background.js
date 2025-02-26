@@ -2,8 +2,6 @@ class StateManager {
     constructor() {
         this.state = new Map();
         this.cleanupTimes = new Map();
-        this.output_password = '';
-        this.checksum = '';
         this.state.set('master_password', '');
         this.state.set('length', 40);
         this.state.set('numbers_checked', true);
@@ -16,7 +14,16 @@ class StateManager {
         this.setupMessageHandler();
         this.setupAutoCleanup();
     }
-    generatePassword(map) {
+    sendPasswordResult(password, checksum) {
+        chrome.runtime.sendMessage({
+            type: 'PASSWORD_GENERATED',
+            data: {
+                password: password,
+                checksum: checksum
+            }
+        });
+    }
+    async generatePassword(map, mode=0) {
         let length = map.get('length');
         let numbers_checked = map.get('numbers_checked');
         let symbols_checked = map.get('symbols_checked');
@@ -24,7 +31,8 @@ class StateManager {
         let lowercase_checked = map.get('lowercase_checked');
         let symbols_char = map.get('symbols_char');
         if (!numbers_checked && !uppercase_checked && !lowercase_checked && !symbols_checked) {
-            return '';
+            this.sendPasswordResult('至少勾選一種類別', 'ERROR');
+            return;
         }
         let charset = '';
         let password = '';
@@ -38,10 +46,9 @@ class StateManager {
             var randomIndex = byte[0] % charset.length;
             password += charset.charAt(randomIndex);
         }
-        this.output_password = password;
-        this.checksum = '';
+        this.sendPasswordResult(password, 'RANDOM');
     }
-    async generateSlavePassword(map){
+    async generateSlavePassword(map, mode=0){
         let version = map.get('version');
         let domain = map.get('domain');
         let length = map.get('length');
@@ -52,6 +59,7 @@ class StateManager {
         let symbols_char = map.get('symbols_char');
         let master_password = map.get('master_password');
         if (master_password.length == 0) {
+            this.sendPasswordResult('主密碼不可為空！', 'ERROR');
             return '';
         }
         let charset = '';
@@ -79,10 +87,7 @@ class StateManager {
         const signature_of_master = await crypto.subtle.sign('HMAC', key, masterPasswordBytes);
         let master_hash_hex = Array.from(new Uint8Array(signature_of_master)).map(b => ('00' + b.toString(16)).slice(-2)).join('').toUpperCase().substring(0, 8);
 
-        this.checksum = master_hash_hex;
-
         let combine_binary_password = password + password2;
-
         let finalPassword = '';
         //7bit
         let charset_length = charset.length;
@@ -90,17 +95,7 @@ class StateManager {
             let pos = parseInt(combine_binary_password.substring(i * 7, i * 7 + 7), 2) % charset_length;
             finalPassword += charset.charAt(pos);
         }
-
-        //output_password = finalPassword;
-        console.log(finalPassword);
-        this.output_password = finalPassword;
-        chrome.runtime.sendMessage({
-            type: 'PASSWORD_GENERATED',
-            data: {
-                password: finalPassword,
-                checksum: master_hash_hex
-            }
-        });
+        this.sendPasswordResult(finalPassword, master_hash_hex);
     }
 
     getState(key, _default = null) {
@@ -131,15 +126,11 @@ class StateManager {
                         break;
                     case 'GENERATE_PASSWORD':
                         if (this.state.get('master_password').length == 0) {
-                            this.generatePassword(this.state);
-                            sendResponse({ 
-                                success: true, 
-                                password: this.output_password, 
-                                checksum: this.checksum 
-                            });
+                            this.generatePassword(this.state, message.mode);
                         } else {
-                            this.generateSlavePassword(this.state);
+                            this.generateSlavePassword(this.state, message.mode);
                         }
+                        sendResponse({ success: true, status: 'processing' });
                         break;
                     default:
                         sendResponse({ success: false, error: 'Invalid message type' });

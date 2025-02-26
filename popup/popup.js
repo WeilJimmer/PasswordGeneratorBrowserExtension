@@ -10,8 +10,9 @@ async function get_state(_key, _default=null) {
     return null;
 }
 
-async function send_generate_password() {
-    let response = await chrome.runtime.sendMessage({ type: 'GENERATE_PASSWORD' });
+async function send_generate_password(mode=0) {
+    // mode: 0 = don't save in history, 1 = save in history
+    let response = await chrome.runtime.sendMessage({ type: 'GENERATE_PASSWORD', mode: mode });
     return response;
 }
 
@@ -55,34 +56,43 @@ document.addEventListener('DOMContentLoaded', async () => {
             checksumField.textContent = message.data.checksum;
         }
     });
-    lengthSlider.oninput = function() {
+    lengthSlider.oninput = async function() {
         lengthValue.value = this.value;
         set_state('length', this.value);
+        await send_generate_password();
     }
-    masterPasswordField.addEventListener('input', (e) => {
+    masterPasswordField.addEventListener('input', async (e) => {
         const newPw = e.target.value;
         set_state('master_password', newPw);
+        await send_generate_password();
     });
-    numbersCheckbox.addEventListener('change', (e) => {
+    numbersCheckbox.addEventListener('change', async (e) => {
         set_state('numbers_checked', e.target.checked);
+        await send_generate_password();
     });
-    uppercaseCheckbox.addEventListener('change', (e) => {
+    uppercaseCheckbox.addEventListener('change', async (e) => {
         set_state('uppercase_checked', e.target.checked);
+        await send_generate_password();
     });
-    lowercaseCheckbox.addEventListener('change', (e) => {
+    lowercaseCheckbox.addEventListener('change', async (e) => {
         set_state('lowercase_checked', e.target.checked);
+        await send_generate_password();
     });
-    symbolsCheckbox.addEventListener('change', (e) => {
+    symbolsCheckbox.addEventListener('change', async (e) => {
         set_state('symbols_checked', e.target.checked);
+        await send_generate_password();
     });
-    symbolsCharField.addEventListener('input', (e) => {
+    symbolsCharField.addEventListener('input', async (e) => {
         set_state('symbols_char', e.target.value);
+        await send_generate_password();
     });
-    saltField.addEventListener('input', (e) => {
+    saltField.addEventListener('input', async (e) => {
         set_state('domain', e.target.value);
+        await send_generate_password();
     });
-    versionField.addEventListener('input', (e) => {
+    versionField.addEventListener('input', async (e) => {
         set_state('version', e.target.value);
+        await send_generate_password();
     });
     // 複製按鈕功能
     generateBtn.addEventListener('click', async () => {
