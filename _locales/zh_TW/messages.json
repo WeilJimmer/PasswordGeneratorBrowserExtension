@@ -2,5 +2,61 @@
     "app_title": {
         "message": "密碼生成器 for Chrome",
         "description": "Name of the extension"
+    },
+    "options_number_checkbox": {
+        "message": "數字[0-9]",
+        "description": "Options of Number[0-9]"
+    },
+    "options_uppercase_checkbox": {
+        "message": "英大寫[A-Z]",
+        "description": "Options of Uppercase[A-Z]"
+    },
+    "options_lowercase_checkbox": {
+        "message": "英小寫[a-z]",
+        "description": "Options of Lowercase[a-z]"
+    },
+    "options_symbols_checkbox": {
+        "message": "符號",
+        "description": "Options of Symbols"
+    },
+    "master_password_label": {
+        "message": "主密碼",
+        "description": "Label of Master Password"
+    },
+    "master_password_placeholder": {
+        "message": "請輸入主密碼",
+        "description": "Placeholder of Master Password"
+    },
+    "salt_label": {
+        "message": "鹽",
+        "description": "Label of Salt"
+    },
+    "salt_placeholder": {
+        "message": "請輸入提示詞(鹽)",
+        "description": "Placeholder of Salt"
+    },
+    "version_label": {
+        "message": "版本",
+        "description": "Label of Version"
+    },
+    "button_copy": {
+        "message": "複製",
+        "description": "Button of Copy"
+    },
+    "button_generate": {
+        "message": "生成",
+        "description": "Button of Generate"
+    },
+    "button_reset": {
+        "message": "重置",
+        "description": "Button of Reset"
+    },
+    "region_generated_password_label": {
+        "message": "(生成的密碼)",
+        "description": "Label of Generated Password"
+    },
+    "message_copied_to_clipboard": {
+        "message": "已複製到剪貼簿！",
+        "description": "Message of Copied to clipboard"
     }
 }

@@ -2,7 +2,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>__MSG_app_title__</title>
+  <title>app_title</title>
   <meta http-equiv="content-type" content="text/html; charset=utf-8">
   <style>
     body {
@@ -88,27 +88,27 @@
   <div class="container">
     <div class="url-display" id="currentUrl"></div>
     <div>
-      <span><input id="lengthValue" value="40" style="width:40px;" type="number" max="100" min="1" onchange="document.getElementById('length').value=this.value"></span>
+      <span><input id="lengthValue" value="40" style="width:40px;" type="number" max="100" min="1"></span>
       <input class="style2" type="range" id="length" name="length" min="1" max="100" value="40" style="width: calc(100% - 60px);"></div>
     <div>
-      <input class="style2" type="checkbox" id="numbers" name="numbers" checked="checked"><label for="numbers">數字0-9</label><input class="style2" type="checkbox" id="uppercase" name="uppercase" checked="checked"><label for="uppercase">英文A-Z</label>
-      <input class="style2" type="checkbox" id="lowercase" name="lowercase" checked="checked"><label for="lowercase">英文a-z</label><input class="style2" type="checkbox" id="symbols" name="symbols" checked="checked"><label for="symbols">符號</label>
+      <input class="style2" type="checkbox" id="numbers" name="numbers" checked="checked"><label for="numbers"><data-lang>options_number_checkbox</data-lang></label><input class="style2" type="checkbox" id="uppercase" name="uppercase" checked="checked"><label for="uppercase"><data-lang>options_uppercase_checkbox</data-lang></label>
+      <input class="style2" type="checkbox" id="lowercase" name="lowercase" checked="checked"><label for="lowercase"><data-lang>options_lowercase_checkbox</data-lang></label><input class="style2" type="checkbox" id="symbols" name="symbols" checked="checked"><label for="symbols"><data-lang>options_symbols_checkbox</data-lang></label>
     </div>
     <div><input type="text" class="style2" id="symbols_char" style="width:250px" value="!@#$%^&*(){}[]=,." maxlength="66"></div>
     <div class="settings">
-      <label for="master_password">Master Password: <small id="checksum_span"></small></label>
-      <input type="password" id="master_password" placeholder="主密碼">
-      <label for="domain">Salt:(版本：<input id="version" value="1" style="width:100px;" type="number" max="9999999" min="1">)</label>
-      <input type="text" id="domain" placeholder="輸入提示詞">
+      <label for="master_password"><data-lang>master_password_label</data-lang>: <small id="checksum_span"></small></label>
+      <input type="password" id="master_password" local-placeholder="master_password_placeholder" placeholder="master_password_placeholder">
+      <label for="domain"><data-lang>salt_label</data-lang>: (<data-lang>version_label</data-lang>:<input id="version" value="1" style="width:100px;" type="number" max="9999999" min="1">)</label>
+      <input type="text" id="domain" local-placeholder="salt_placeholder" placeholder="salt_placeholder">
     </div>
     <div class="password-container">
-      <div class="password" id="password">(生成的密碼)</div>
+      <div class="password" id="password"><data-lang>region_generated_password_label</data-lang></div>
     </div>
     <div>
-      <button class="btn" id="copyBtn">複製</button>
-      <button class="btn" id="generateBtn">生成</button>
+      <button class="btn" id="copyBtn"><data-lang>button_copy</data-lang></button>
+      <button class="btn" id="generateBtn"><data-lang>button_generate</data-lang></button>
     </div>
-    <div class="success-message" id="successMessage">已複製到剪貼簿！</div>
+    <div class="success-message" id="successMessage"><data-lang>message_copied_to_clipboard</data-lang></div>
   </div>
   <script src="../scripts/state.js"></script>
   <script src="popup.js"></script>

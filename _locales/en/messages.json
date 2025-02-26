@@ -2,5 +2,61 @@
     "app_title": {
         "message": "Password Generator for Chrome",
         "description": "Name of the extension"
+    },
+    "options_number_checkbox": {
+        "message": "Number[0-9]",
+        "description": "Options of Number[0-9]"
+    },
+    "options_uppercase_checkbox": {
+        "message": "Uppercase[A-Z]",
+        "description": "Options of Uppercase[A-Z]"
+    },
+    "options_lowercase_checkbox": {
+        "message": "Lowercase[a-z]",
+        "description": "Options of Lowercase[a-z]"
+    },
+    "options_symbols_checkbox": {
+        "message": "Symbols",
+        "description": "Options of Symbols"
+    },
+    "master_password_label": {
+        "message": "Master Password",
+        "description": "Label of Master Password"
+    },
+    "master_password_placeholder": {
+        "message": "Enter your master password",
+        "description": "Placeholder of Master Password"
+    },
+    "salt_label": {
+        "message": "Salt",
+        "description": "Label of Salt"
+    },
+    "salt_placeholder": {
+        "message": "Enter your salt (prompt/hint)",
+        "description": "Placeholder of Salt"
+    },
+    "version_label": {
+        "message": "Version",
+        "description": "Label of Version"
+    },
+    "button_copy": {
+        "message": "Copy",
+        "description": "Button of Copy"
+    },
+    "button_generate": {
+        "message": "Generate",
+        "description": "Button of Generate"
+    },
+    "button_reset": {
+        "message": "Reset",
+        "description": "Button of Reset"
+    },
+    "region_generated_password_label": {
+        "message": "(Generated Password)",
+        "description": "Label of Generated Password"
+    },
+    "message_copied_to_clipboard": {
+        "message": "Copied to clipboard!",
+        "description": "Message of Copied to clipboard"
     }
 }

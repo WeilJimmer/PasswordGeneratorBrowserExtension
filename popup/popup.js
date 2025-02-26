@@ -56,6 +56,17 @@ document.addEventListener('DOMContentLoaded', async () => {
             checksumField.textContent = message.data.checksum;
         }
     });
+    document.querySelectorAll('data-lang').forEach(elem => {
+        elem.innerText = chrome.i18n.getMessage(elem.innerText);
+    });
+    document.querySelectorAll('[local-placeholder]').forEach(elem => {
+        elem.placeholder = chrome.i18n.getMessage(elem.getAttribute("local-placeholder"))
+    });
+    lengthValue.addEventListener('input', async (e) => {
+        lengthSlider.value = e.target.value;
+        set_state('length', e.target.value);
+        await send_generate_password();
+    });
     lengthSlider.oninput = async function() {
         lengthValue.value = this.value;
         set_state('length', this.value);
