@@ -78,7 +78,7 @@ class PopupManager {
                 this.onBackgroundReady();
             }else if (message.type === 'PASSWORD_GENERATED') {
                 this.elements.passwordField.textContent = message.data.password;
-                this.elements.checksumField.textContent = message.data.checksum;
+                this.elements.checksumField.textContent = '['+message.data.checksum+']';
             }
         });
     }
@@ -166,13 +166,7 @@ class PopupManager {
             await send_generate_password();
         });
         this.elements.generateBtn.addEventListener('click', async () => {
-            console.log('generateBtn clicked');
-            const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
-            const url = tab.url;
-            const newSalt = this.elements.saltField.value;
-            const response = await send_generate_password();
-            this.elements.passwordField.textContent = response.password;
-            this.elements.checksumField.textContent = response.checksum;
+            await send_generate_password();
         });
         this.elements.copyBtn.addEventListener('click', () => {
         navigator.clipboard.writeText(this.elements.passwordField.textContent).then(() => {

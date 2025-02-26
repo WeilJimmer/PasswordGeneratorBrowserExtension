@@ -8,11 +8,11 @@
         "description": "Options of Number[0-9]"
     },
     "options_uppercase_checkbox": {
-        "message": "英大寫[A-Z]",
+        "message": "英文[A-Z]",
         "description": "Options of Uppercase[A-Z]"
     },
     "options_lowercase_checkbox": {
-        "message": "英小寫[a-z]",
+        "message": "英文[a-z]",
         "description": "Options of Lowercase[a-z]"
     },
     "options_symbols_checkbox": {
