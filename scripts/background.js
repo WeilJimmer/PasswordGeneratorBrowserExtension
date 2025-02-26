@@ -1,3 +1,4 @@
+// background.js
 import { DEFAULT_CONST } from './constants.js';
 
 class StateManager {

@@ -1,5 +1,4 @@
 // popup.js
-
 async function set_state(_key,_value,_ttl=20) {
     await StateManagerClient.setState(_key, _value, { ttl: _ttl * 1000 });
 }
@@ -116,8 +115,6 @@ class PopupManager {
         this.elements.currentUrlField.textContent = tab.url;
         await set_state('current_url', tab.url);
         await this.initializeEventListeners();
-        console.log('UI initialized');
-        console.log(await get_state('length', 40))
     }
 
     async initializeEventListeners() {
@@ -177,13 +174,6 @@ class PopupManager {
                 }, 2000);
             });
         });
-    }
-
-    handleButtonClick() {
-        if (!this.initialized) {
-            console.warn('Cannot perform action: background not ready');
-            return;
-        }
     }
 }
 // 當擴充功能彈出視窗開啟時
