@@ -1,35 +1,82 @@
+import { DEFAULT_CONST } from './constants.js';
+
 class StateManager {
+
     constructor() {
+        this.isInitialized = false;
         this.state = new Map();
         this.cleanupTimes = new Map();
-        this.state.set('master_password', '');
-        this.state.set('length', 40);
-        this.state.set('numbers_checked', true);
-        this.state.set('symbols_checked', true);
-        this.state.set('uppercase_checked', true);
-        this.state.set('lowercase_checked', true);
-        this.state.set('symbols_char', '!@#$%^&*(){}[]=,.');
-        this.state.set('domain', '');
-        this.state.set('version', '1');
         this.setupMessageHandler();
         this.setupAutoCleanup();
+        this.init();
     }
+
     sendPasswordResult(password, checksum) {
-        chrome.runtime.sendMessage({
-            type: 'PASSWORD_GENERATED',
-            data: {
-                password: password,
-                checksum: checksum
-            }
-        });
+        try{
+            chrome.runtime.sendMessage({
+                type: 'PASSWORD_GENERATED',
+                data: {
+                    password: password,
+                    checksum: checksum
+                }
+            });
+        }catch(error){
+            console.error('Failed to send password result:', error);
+        }
     }
+
+    getState(key, _default = null) {
+        if (this.state.has(key)) {
+            return this.state.get(key);
+        }
+        return _default;
+    }
+
+    async getPopupContext() {
+        try {
+            const contexts = await chrome.runtime.getContexts({
+                contextTypes: ['POPUP']
+            });
+            return contexts.length > 0 ? contexts[0] : null;
+        } catch (error) {
+            console.error('Failed to get popup context:', error);
+            return null;
+        }
+    }
+
+    async sendMessageToPopup(message) {
+        const popupContext = await this.getPopupContext();
+        if (popupContext) {
+            try {
+                const response = await chrome.runtime.sendMessage(message);
+                return response;
+            } catch (error) {
+                console.error('Send message error:', error);
+            }
+        } else {
+            console.log('Popup is not open');
+        }
+    }
+
+    async init() {
+        try {
+            this.isInitialized = true;
+            this.sendMessageToPopup({
+                type: 'BACKGROUND_INITIALIZED',
+                data: { timestamp: Date.now() }
+            });
+        } catch (error) {
+            console.log('Background initialization failed:', error);
+        }
+    }
+
     async generatePassword(map, mode=0) {
-        let length = map.get('length');
-        let numbers_checked = map.get('numbers_checked');
-        let symbols_checked = map.get('symbols_checked');
-        let uppercase_checked = map.get('uppercase_checked');
-        let lowercase_checked = map.get('lowercase_checked');
-        let symbols_char = map.get('symbols_char');
+        let length = this.getState('length', DEFAULT_CONST.LENGTH);
+        let symbols_char = this.getState('symbols_char', DEFAULT_CONST.SYMBOLS_CHAR);
+        let numbers_checked = this.getState('numbers_checked', DEFAULT_CONST.NUMBERS_CHECKED);
+        let symbols_checked = this.getState('symbols_checked', DEFAULT_CONST.SYMBOLS_CHECKED);
+        let uppercase_checked = this.getState('uppercase_checked', DEFAULT_CONST.UPPERCASE_CHECKED);
+        let lowercase_checked = this.getState('lowercase_checked', DEFAULT_CONST.LOWERCASE_CHECKED);
         if (!numbers_checked && !uppercase_checked && !lowercase_checked && !symbols_checked) {
             this.sendPasswordResult('至少勾選一種類別', 'ERROR');
             return;
@@ -48,16 +95,17 @@ class StateManager {
         }
         this.sendPasswordResult(password, 'RANDOM');
     }
+
     async generateSlavePassword(map, mode=0){
-        let version = map.get('version');
-        let domain = map.get('domain');
-        let length = map.get('length');
-        let numbers_checked = map.get('numbers_checked');
-        let symbols_checked = map.get('symbols_checked');
-        let uppercase_checked = map.get('uppercase_checked');
-        let lowercase_checked = map.get('lowercase_checked');
-        let symbols_char = map.get('symbols_char');
-        let master_password = map.get('master_password');
+        let version = this.getState('version', DEFAULT_CONST.VERSION);
+        let domain = this.getState('domain', DEFAULT_CONST.DOMAIN);
+        let length = this.getState('length', DEFAULT_CONST.LENGTH);
+        let symbols_char = this.getState('symbols_char', DEFAULT_CONST.SYMBOLS_CHAR);
+        let master_password = this.getState('master_password', DEFAULT_CONST.MASTER_PASSWORD);
+        let numbers_checked = this.getState('numbers_checked', DEFAULT_CONST.NUMBERS_CHECKED);
+        let symbols_checked = this.getState('symbols_checked', DEFAULT_CONST.SYMBOLS_CHECKED);
+        let uppercase_checked = this.getState('uppercase_checked', DEFAULT_CONST.UPPERCASE_CHECKED);
+        let lowercase_checked = this.getState('lowercase_checked', DEFAULT_CONST.LOWERCASE_CHECKED);
         if (master_password.length == 0) {
             this.sendPasswordResult('主密碼不可為空！', 'ERROR');
             return '';
@@ -98,13 +146,13 @@ class StateManager {
         this.sendPasswordResult(finalPassword, master_hash_hex);
     }
 
-    getState(key, _default = null) {
-        return this.state.get(key) || _default;
-    }
     setupMessageHandler() {
         chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
             try {
                 switch (message.type) {
+                    case 'CHECK_INIT_STATUS':
+                        sendResponse({ isInitialized: this.isInitialized });
+                        break;
                     case 'GET_STATE':
                         sendResponse({
                             success: true,
@@ -125,7 +173,7 @@ class StateManager {
                         sendResponse({ success: true });
                         break;
                     case 'GENERATE_PASSWORD':
-                        if (this.state.get('master_password').length == 0) {
+                        if (this.getState('master_password', DEFAULT_CONST.MASTER_PASSWORD).length == 0) {
                             this.generatePassword(this.state, message.mode);
                         } else {
                             this.generateSlavePassword(this.state, message.mode);
@@ -141,6 +189,7 @@ class StateManager {
             return true;
         });
     }
+
     setState(key, value, options = {ttl:10}) {
         this.state.set(key, value);
         if (options.ttl) {
@@ -154,6 +203,7 @@ class StateManager {
             this.cleanupTimes.set(key, timeoutId);
         }
     }
+
     setupAutoCleanup() {
         chrome.runtime.onSuspend.addListener(() => {
             this.state.clear();
@@ -161,5 +211,6 @@ class StateManager {
             this.cleanupTimes.clear();
         });
     }
+
 }
 const stateManager = new StateManager();

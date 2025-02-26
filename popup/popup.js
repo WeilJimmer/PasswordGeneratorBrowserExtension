@@ -6,8 +6,8 @@ async function set_state(_key,_value,_ttl=20) {
 
 async function get_state(_key, _default=null) {
     const _value = await StateManagerClient.getState(_key);
-    if (_value) return _value;
-    return null;
+    if (_value!=null && _value!=undefined) return _value;
+    return _default;
 }
 
 async function send_generate_password(mode=0) {
@@ -16,114 +16,189 @@ async function send_generate_password(mode=0) {
     return response;
 }
 
+class PopupManager {
+    constructor() {
+        this.initialized = false;
+        this.elements = {
+            lengthSlider: document.getElementById('length'),
+            lengthValue: document.getElementById('lengthValue'),
+            numbersCheckbox: document.getElementById('numbers'),
+            uppercaseCheckbox: document.getElementById('uppercase'),
+            lowercaseCheckbox: document.getElementById('lowercase'),
+            symbolsCheckbox: document.getElementById('symbols'),
+            symbolsCharField: document.getElementById('symbols_char'),
+            masterPasswordField: document.getElementById('master_password'),
+            saltField: document.getElementById('domain'),
+            versionField: document.getElementById('version'),
+            currentUrlField: document.getElementById('currentUrl'),
+            passwordField: document.getElementById('password'),
+            checksumField: document.getElementById('checksum_span'),
+            generateBtn: document.getElementById('generateBtn'),
+            copyBtn: document.getElementById('copyBtn'),
+        };
+        this.init();
+    }
 
+    async init() {
+        await this.checkBackgroundStatus();
+        this.setupMessageListener();
+    }
+
+    async checkBackgroundStatus() {
+        try {
+            const status = await this.sendMessage('CHECK_INIT_STATUS');
+            if (status.isInitialized) {
+                this.onBackgroundReady();
+            } else {
+                this.waitForInitialization();
+            }
+        } catch (error) {
+            console.error('Failed to check background status:', error);
+        }
+    }
+
+    sendMessage(type, data = {}) {
+        return new Promise((resolve, reject) => {
+            chrome.runtime.sendMessage(
+                { type, data },
+                response => {
+                    if (chrome.runtime.lastError) {
+                        reject(chrome.runtime.lastError);
+                    } else {
+                        resolve(response);
+                    }
+                }
+            );
+        });
+    }
+
+    setupMessageListener() {
+        chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+            if (message.type === 'BACKGROUND_INITIALIZED') {
+                this.onBackgroundReady();
+            }else if (message.type === 'PASSWORD_GENERATED') {
+                this.elements.passwordField.textContent = message.data.password;
+                this.elements.checksumField.textContent = message.data.checksum;
+            }
+        });
+    }
+
+    waitForInitialization() {
+        // 顯示載入中狀態
+        //document.getElementById('loading').style.display = 'block';
+        //document.getElementById('content').style.display = 'none';
+    }
+
+    async onBackgroundReady() {
+        this.initialized = true;
+
+        // 隱藏載入中狀態
+        //document.getElementById('loading').style.display = 'none';
+        //document.getElementById('content').style.display = 'block';
+
+        // 初始化其他功能
+        await this.initializeUI();
+    }
+
+    async initializeUI() {
+        // 初始化按鈕和其他 UI 元素
+        this.elements.masterPasswordField.value = await get_state('master_password', '');
+        this.elements.lengthSlider.value = await get_state('length', 40);
+        this.elements.lengthValue.value = await get_state('length', 40);
+        this.elements.numbersCheckbox.checked = await get_state('numbers_checked', true);
+        this.elements.symbolsCheckbox.checked = await get_state('symbols_checked', true);
+        this.elements.uppercaseCheckbox.checked = await get_state('uppercase_checked', true);
+        this.elements.lowercaseCheckbox.checked = await get_state('lowercase_checked', true);
+        this.elements.symbolsCharField.value = await get_state('symbols_char', '!@#$%^&*(){}[]=,.');
+        this.elements.saltField.value = await get_state('domain', '');
+        this.elements.versionField.value = await get_state('version', '1');
+        const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
+        this.elements.currentUrlField.textContent = tab.url;
+        await set_state('current_url', tab.url);
+        await this.initializeEventListeners();
+        console.log('UI initialized');
+        console.log(await get_state('length', 40))
+    }
+
+    async initializeEventListeners() {
+        // 初始化事件監聽器
+        this.elements.lengthValue.addEventListener('input', async (e) => {
+            this.elements.lengthSlider.value = e.target.value;
+            set_state('length', e.target.value);
+            await send_generate_password();
+        });
+        this.elements.lengthSlider.addEventListener('input', async (e) => {
+            this.elements.lengthValue.value = e.target.value;
+            set_state('length', e.target.value);
+            await send_generate_password();
+        });
+        this.elements.masterPasswordField.addEventListener('input', async (e) => {
+            const newPw = e.target.value;
+            set_state('master_password', newPw);
+            await send_generate_password();
+        });
+        this.elements.numbersCheckbox.addEventListener('change', async (e) => {
+            set_state('numbers_checked', e.target.checked);
+            await send_generate_password();
+        });
+        this.elements.uppercaseCheckbox.addEventListener('change', async (e) => {
+            set_state('uppercase_checked', e.target.checked);
+            await send_generate_password();
+        });
+        this.elements.lowercaseCheckbox.addEventListener('change', async (e) => {
+            set_state('lowercase_checked', e.target.checked);
+            await send_generate_password();
+        });
+        this.elements.symbolsCheckbox.addEventListener('change', async (e) => {
+            set_state('symbols_checked', e.target.checked);
+            await send_generate_password();
+        });
+        this.elements.symbolsCharField.addEventListener('input', async (e) => {
+            set_state('symbols_char', e.target.value);
+            await send_generate_password();
+        });
+        this.elements.saltField.addEventListener('input', async (e) => {
+            set_state('domain', e.target.value);
+            await send_generate_password();
+        });
+        this.elements.versionField.addEventListener('input', async (e) => {
+            set_state('version', e.target.value);
+            await send_generate_password();
+        });
+        this.elements.generateBtn.addEventListener('click', async () => {
+            console.log('generateBtn clicked');
+            const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
+            const url = tab.url;
+            const newSalt = this.elements.saltField.value;
+            const response = await send_generate_password();
+            this.elements.passwordField.textContent = response.password;
+            this.elements.checksumField.textContent = response.checksum;
+        });
+        this.elements.copyBtn.addEventListener('click', () => {
+        navigator.clipboard.writeText(this.elements.passwordField.textContent).then(() => {
+                const successMessage = document.getElementById('successMessage');
+                successMessage.classList.add('show');
+                setTimeout(() => {
+                    successMessage.classList.remove('show');
+                }, 2000);
+            });
+        });
+    }
+
+    handleButtonClick() {
+        if (!this.initialized) {
+            console.warn('Cannot perform action: background not ready');
+            return;
+        }
+    }
+}
 // 當擴充功能彈出視窗開啟時
 document.addEventListener('DOMContentLoaded', async () => {
-    // 宣告定義
-    const lengthSlider = document.getElementById('length');
-    const lengthValue = document.getElementById('lengthValue');
-    const numbersCheckbox = document.getElementById('numbers');
-    const uppercaseCheckbox = document.getElementById('uppercase');
-    const lowercaseCheckbox = document.getElementById('lowercase');
-    const symbolsCheckbox = document.getElementById('symbols');
-    const symbolsCharField = document.getElementById('symbols_char');
-    const masterPasswordField = document.getElementById('master_password');
-    const saltField = document.getElementById('domain');
-    const versionField = document.getElementById('version');
-    const currentUrlField = document.getElementById('currentUrl');
-    const passwordField = document.getElementById('password');
-    const checksumField = document.getElementById('checksum_span');
-    const generateBtn = document.getElementById('generateBtn');
-    const copyBtn = document.getElementById('copyBtn');
-
-    // 設定 UI 元件的值
-    masterPasswordField.value = await get_state('master_password', '');
-    lengthSlider.value = await get_state('length', 40);
-    lengthValue.value = await get_state('length', 40);
-    numbersCheckbox.checked = await get_state('numbers_checked', true);
-    symbolsCheckbox.checked = await get_state('symbols_checked', true);
-    uppercaseCheckbox.checked = await get_state('uppercase_checked', true);
-    lowercaseCheckbox.checked = await get_state('lowercase_checked', true);
-    symbolsCharField.value = await get_state('symbols_char', '!@#$%^&*(){}[]=,.');
-    saltField.value = await get_state('domain', '');
-    versionField.value = await get_state('version', '1');
-    const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
-    currentUrlField.textContent = tab.url;
-    await set_state('current_url', tab.url);
-    chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
-        if (message.type === 'PASSWORD_GENERATED') {
-            passwordField.textContent = message.data.password;
-            checksumField.textContent = message.data.checksum;
-        }
-    });
+    const popupManager = new PopupManager();
     document.querySelectorAll('data-lang').forEach(elem => {
         elem.innerText = chrome.i18n.getMessage(elem.innerText);
     });
     document.querySelectorAll('[local-placeholder]').forEach(elem => {
         elem.placeholder = chrome.i18n.getMessage(elem.getAttribute("local-placeholder"))
     });
-    lengthValue.addEventListener('input', async (e) => {
-        lengthSlider.value = e.target.value;
-        set_state('length', e.target.value);
-        await send_generate_password();
-    });
-    lengthSlider.oninput = async function() {
-        lengthValue.value = this.value;
-        set_state('length', this.value);
-        await send_generate_password();
-    }
-    masterPasswordField.addEventListener('input', async (e) => {
-        const newPw = e.target.value;
-        set_state('master_password', newPw);
-        await send_generate_password();
-    });
-    numbersCheckbox.addEventListener('change', async (e) => {
-        set_state('numbers_checked', e.target.checked);
-        await send_generate_password();
-    });
-    uppercaseCheckbox.addEventListener('change', async (e) => {
-        set_state('uppercase_checked', e.target.checked);
-        await send_generate_password();
-    });
-    lowercaseCheckbox.addEventListener('change', async (e) => {
-        set_state('lowercase_checked', e.target.checked);
-        await send_generate_password();
-    });
-    symbolsCheckbox.addEventListener('change', async (e) => {
-        set_state('symbols_checked', e.target.checked);
-        await send_generate_password();
-    });
-    symbolsCharField.addEventListener('input', async (e) => {
-        set_state('symbols_char', e.target.value);
-        await send_generate_password();
-    });
-    saltField.addEventListener('input', async (e) => {
-        set_state('domain', e.target.value);
-        await send_generate_password();
-    });
-    versionField.addEventListener('input', async (e) => {
-        set_state('version', e.target.value);
-        await send_generate_password();
-    });
-    // 複製按鈕功能
-    generateBtn.addEventListener('click', async () => {
-        const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
-        const url = tab.url;
-        const newSalt = saltField.value;
-        const response = await send_generate_password();
-        passwordField.textContent = response.password;
-        checksumField.textContent = response.checksum;
-    });
-    copyBtn.addEventListener('click', () => {
-    navigator.clipboard.writeText(passwordField.textContent).then(() => {
-            const successMessage = document.getElementById('successMessage');
-            successMessage.classList.add('show');
-            setTimeout(() => {
-                successMessage.classList.remove('show');
-            }, 2000);
-        });
-    });
-    setInterval(() => {
-        set_state('master_password', masterPasswordField.value);
-    }, 3000);
 });
