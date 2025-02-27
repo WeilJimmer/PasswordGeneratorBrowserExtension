@@ -1,5 +1,5 @@
 // popup.js
-async function set_state(_key,_value,_ttl=3600) {
+async function set_state(_key,_value,_ttl=-1) {
     await StateManagerClient.setState(_key, _value, { ttl: _ttl * 1000 });
 }
 
@@ -15,6 +15,13 @@ async function send_generate_password(mode=0) {
     return response;
 }
 
+const AUTOFILL_OPTIONS = {
+    DO_NOTHING : 'do-nothing',
+    AUTOFILL_DOMAIN : 'autofill-domain',
+    AUTOFILL_URL : 'autofill-url',
+    AUTOFILL_KEYWORD : 'autofill-keyword'
+}
+
 class PopupManager {
     constructor() {
         this.initialized = false;
@@ -27,7 +34,8 @@ class PopupManager {
             symbolsCheckbox: document.getElementById('symbols'),
             symbolsCharField: document.getElementById('symbols_char'),
             masterPasswordField: document.getElementById('master_password'),
-            saltField: document.getElementById('domain'),
+            saltField: document.getElementById('salt'),
+            autofillSelect: document.getElementById('auto_fill_salt'),
             versionField: document.getElementById('version'),
             passwordField: document.getElementById('password'),
             checksumField: document.getElementById('checksum_span'),
@@ -98,6 +106,30 @@ class PopupManager {
         await this.initializeUI();
     }
 
+    getKeywordFromUrl(domain){
+        if (domain.indexOf('www.')===0) domain = domain.substring(4);
+        return domain.replace(/\./g, '-');
+    }
+
+    getPureURL(url){
+        const urlObj = new URL(url);
+        return urlObj.protocol + '//' + urlObj.hostname + urlObj.pathname;
+    }
+
+    async setAutofillOptions(){
+        const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
+        const url = new URL(tab.url);
+        const domain = url.hostname;
+        const keyword = this.getKeywordFromUrl(domain);
+        const options = this.elements.autofillSelect.value;
+        let final_salt = '';
+        if (options == AUTOFILL_OPTIONS.DO_NOTHING) return;
+        if (options == AUTOFILL_OPTIONS.AUTOFILL_DOMAIN) final_salt = domain;
+        if (options == AUTOFILL_OPTIONS.AUTOFILL_URL) final_salt = this.getPureURL(url.href);
+        if (options == AUTOFILL_OPTIONS.AUTOFILL_KEYWORD) final_salt = keyword;
+        this.elements.saltField.value = final_salt;
+    }
+
     async initializeUI() {
         // 初始化按鈕和其他 UI 元素
         this.elements.masterPasswordField.value = await get_state('master_password', '');
@@ -108,8 +140,9 @@ class PopupManager {
         this.elements.uppercaseCheckbox.checked = await get_state('uppercase_checked', true);
         this.elements.lowercaseCheckbox.checked = await get_state('lowercase_checked', true);
         this.elements.symbolsCharField.value = await get_state('symbols_char', '!@#$%^&*(){}[]=,.');
-        this.elements.saltField.value = await get_state('domain', '');
+        this.elements.saltField.value = await get_state('salt', '');
         this.elements.versionField.value = await get_state('version', '1');
+        this.elements.autofillSelect.value = await get_state('autofill_options', AUTOFILL_OPTIONS.DO_NOTHING);
         await this.initializeEventListeners();
         this.setAllUiState();
     }
@@ -122,10 +155,12 @@ class PopupManager {
         await set_state('uppercase_checked', this.elements.uppercaseCheckbox.checked);
         await set_state('lowercase_checked', this.elements.lowercaseCheckbox.checked);
         await set_state('symbols_char', this.elements.symbolsCharField.value);
-        await set_state('domain', this.elements.saltField.value);
+        await set_state('salt', this.elements.saltField.value);
         await set_state('version', this.elements.versionField.value);
+        await set_state('autofill_options', this.elements.autofillSelect.value);
         const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
         await set_state('current_url', tab.url);
+        await this.setAutofillOptions();
     }
 
     async initializeEventListeners() {
@@ -166,11 +201,16 @@ class PopupManager {
             await send_generate_password();
         });
         this.elements.saltField.addEventListener('input', async (e) => {
-            set_state('domain', e.target.value);
+            set_state('salt', e.target.value);
             await send_generate_password();
         });
         this.elements.versionField.addEventListener('input', async (e) => {
             set_state('version', e.target.value);
+            await send_generate_password();
+        });
+        this.elements.autofillSelect.addEventListener('change', async (e) => {
+            set_state('autofill_options', e.target.value);
+            await this.setAutofillOptions();
             await send_generate_password();
         });
         this.elements.generateBtn.addEventListener('click', async () => {

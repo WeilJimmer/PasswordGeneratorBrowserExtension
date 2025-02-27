@@ -101,8 +101,16 @@
     <div class="settings">
       <label for="master_password"><data-lang>master_password_label</data-lang>: <small id="checksum_span"></small></label>
       <input type="password" id="master_password" local-placeholder="master_password_placeholder" placeholder="master_password_placeholder" autocomplete="off" style="width: 250px;">
-      <label for="domain"><data-lang>salt_label</data-lang>: (<data-lang>version_label</data-lang>:<input id="version" value="1" style="width:60px;" type="number" max="9999999" min="1">)</label>
-      <input type="text" id="domain" local-placeholder="salt_placeholder" placeholder="salt_placeholder" style="width: 250px;">
+      <label for="salt">
+        <data-lang>salt_label</data-lang>: (<data-lang>version_label</data-lang>:<input id="version" value="1" style="width:60px;" type="number" max="9999999" min="1">)
+        <select id="auto_fill_salt" class="style2">
+          <option value="do-nothing">什麼都不做</option>
+          <option value="autofill-domain">自動填入網域</option>
+          <option value="autofill-url">自動填入網址</option>
+          <option value="autofill-keyword">自動填入關鍵字</option>
+        </select>
+      </label>
+      <input type="text" id="salt" local-placeholder="salt_placeholder" placeholder="salt_placeholder" style="width: 250px;">
     </div>
     <div class="password-container">
       <div class="password" id="password"><data-lang>region_generated_password_label</data-lang></div>

@@ -6,6 +6,7 @@ export const DEFAULT_CONST = {
     UPPERCASE_CHECKED : true,
     LOWERCASE_CHECKED : true,
     SYMBOLS_CHAR : '!@#$%^&*(){}[]:,.',
-    DOMAIN : '',
-    VERSION : '1'
+    SALT : '',
+    VERSION : '1',
+    AUTOFILL_OPTIONS : 'do-nothing'
 }

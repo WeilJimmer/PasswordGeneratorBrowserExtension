@@ -52,7 +52,7 @@ class StateManager {
                 const response = await chrome.runtime.sendMessage(message);
                 return response;
             } catch (error) {
-                console.error('Send message error:', error);
+                console.log('Send message error:', error);
             }
         } else {
             console.log('Popup is not open');
@@ -99,7 +99,7 @@ class StateManager {
 
     async generateSlavePassword(map, mode=0){
         let version = this.getState('version', DEFAULT_CONST.VERSION);
-        let domain = this.getState('domain', DEFAULT_CONST.DOMAIN);
+        let salt = this.getState('salt', DEFAULT_CONST.SALT);
         let length = this.getState('length', DEFAULT_CONST.LENGTH);
         let symbols_char = this.getState('symbols_char', DEFAULT_CONST.SYMBOLS_CHAR);
         let master_password = this.getState('master_password', DEFAULT_CONST.MASTER_PASSWORD);
@@ -120,7 +120,7 @@ class StateManager {
         const encoder = new TextEncoder();
         const masterPasswordBytes = encoder.encode(master_password);
 
-        const passwordData = `${version}:${domain}`;
+        const passwordData = `${version}:${salt}`;
         const passwordDataBytes = encoder.encode(passwordData);
 
         const key = await crypto.subtle.importKey(
@@ -193,7 +193,7 @@ class StateManager {
 
     setState(key, value, options = {ttl:10}) {
         this.state.set(key, value);
-        if (options.ttl) {
+        if (options.ttl>0) {
             if (this.cleanupTimes.has(key)) {
                 clearTimeout(this.cleanupTimes.get(key));
             }
