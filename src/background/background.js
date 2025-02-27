@@ -1,5 +1,5 @@
 // background.js
-import { DEFAULT_CONST } from './constants.js';
+import { DEFAULT_CONST } from '../modules/constants.js';
 
 class StateManager {
 
