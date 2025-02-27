@@ -1,5 +1,5 @@
 // popup.js
-async function set_state(_key,_value,_ttl=20) {
+async function set_state(_key,_value,_ttl=3600) {
     await StateManagerClient.setState(_key, _value, { ttl: _ttl * 1000 });
 }
 
@@ -29,7 +29,6 @@ class PopupManager {
             masterPasswordField: document.getElementById('master_password'),
             saltField: document.getElementById('domain'),
             versionField: document.getElementById('version'),
-            currentUrlField: document.getElementById('currentUrl'),
             passwordField: document.getElementById('password'),
             checksumField: document.getElementById('checksum_span'),
             generateBtn: document.getElementById('generateBtn'),
@@ -111,10 +110,22 @@ class PopupManager {
         this.elements.symbolsCharField.value = await get_state('symbols_char', '!@#$%^&*(){}[]=,.');
         this.elements.saltField.value = await get_state('domain', '');
         this.elements.versionField.value = await get_state('version', '1');
-        const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
-        this.elements.currentUrlField.textContent = tab.url;
-        await set_state('current_url', tab.url);
         await this.initializeEventListeners();
+        this.setAllUiState();
+    }
+
+    async setAllUiState(){
+        await set_state('master_password', this.elements.masterPasswordField.value, 60);
+        await set_state('length', this.elements.lengthValue.value);
+        await set_state('numbers_checked', this.elements.numbersCheckbox.checked);
+        await set_state('symbols_checked', this.elements.symbolsCheckbox.checked);
+        await set_state('uppercase_checked', this.elements.uppercaseCheckbox.checked);
+        await set_state('lowercase_checked', this.elements.lowercaseCheckbox.checked);
+        await set_state('symbols_char', this.elements.symbolsCharField.value);
+        await set_state('domain', this.elements.saltField.value);
+        await set_state('version', this.elements.versionField.value);
+        const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
+        await set_state('current_url', tab.url);
     }
 
     async initializeEventListeners() {
@@ -131,7 +142,7 @@ class PopupManager {
         });
         this.elements.masterPasswordField.addEventListener('input', async (e) => {
             const newPw = e.target.value;
-            set_state('master_password', newPw);
+            set_state('master_password', newPw, 60);
             await send_generate_password();
         });
         this.elements.numbersCheckbox.addEventListener('change', async (e) => {
@@ -163,6 +174,7 @@ class PopupManager {
             await send_generate_password();
         });
         this.elements.generateBtn.addEventListener('click', async () => {
+            this.setAllUiState();
             await send_generate_password();
         });
         this.elements.copyBtn.addEventListener('click', () => {
