@@ -18,6 +18,9 @@
       padding: 12px;
       margin: 8px;
     }
+    .inline-block {
+      display: inline-block;
+    }
     .url-display {
       word-break: break-all;
       font-size: 12px;
@@ -33,7 +36,7 @@
       padding: 8px;
       background: #eef2ff;
       border-radius: 4px;
-      word-break: break-word;
+      word-break: break-all;
     }
     .password {
       flex-grow: 1;
@@ -94,8 +97,10 @@
       <span><input id="lengthValue" value="40" style="width:40px;" type="number" max="100" min="1"></span>
       <input class="style2" type="range" id="length" name="length" min="1" max="100" value="40" style="width: calc(100% - 60px);"></div>
     <div>
-      <input class="style2" type="checkbox" id="numbers" name="numbers" checked="checked"><label for="numbers"><data-lang>options_number_checkbox</data-lang></label><input class="style2" type="checkbox" id="uppercase" name="uppercase" checked="checked"><label for="uppercase"><data-lang>options_uppercase_checkbox</data-lang></label>
-      <input class="style2" type="checkbox" id="lowercase" name="lowercase" checked="checked"><label for="lowercase"><data-lang>options_lowercase_checkbox</data-lang></label><input class="style2" type="checkbox" id="symbols" name="symbols" checked="checked"><label for="symbols"><data-lang>options_symbols_checkbox</data-lang></label>
+      <div class="inline-block"><input class="style2" type="checkbox" id="numbers" name="numbers" checked="checked"><label for="numbers"><data-lang>options_number_checkbox</data-lang></label></div>
+      <div class="inline-block"><input class="style2" type="checkbox" id="uppercase" name="uppercase" checked="checked"><label for="uppercase"><data-lang>options_uppercase_checkbox</data-lang></label></div>
+      <div class="inline-block"><input class="style2" type="checkbox" id="lowercase" name="lowercase" checked="checked"><label for="lowercase"><data-lang>options_lowercase_checkbox</data-lang></label></div>
+      <div class="inline-block"><input class="style2" type="checkbox" id="symbols" name="symbols" checked="checked"><label for="symbols"><data-lang>options_symbols_checkbox</data-lang></label></div>
     </div>
     <div><input type="text" class="style2" id="symbols_char" style="width:250px" value="!@#$%^&*(){}[]=,." maxlength="66"></div>
     <div class="settings">
@@ -104,10 +109,10 @@
       <label for="salt">
         <data-lang>salt_label</data-lang>: (<data-lang>version_label</data-lang>:<input id="version" value="1" style="width:60px;" type="number" max="9999999" min="1">)
         <select id="auto_fill_salt" class="style2">
-          <option value="do-nothing">什麼都不做</option>
-          <option value="autofill-domain">自動填入網域</option>
-          <option value="autofill-url">自動填入網址</option>
-          <option value="autofill-keyword">自動填入關鍵字</option>
+          <option value="do-nothing" data-lang="salt_auto_fill_options1">Do nothing</option>
+          <option value="autofill-domain" data-lang="salt_auto_fill_options2">Auto Fill Domain</option>
+          <option value="autofill-url" data-lang="salt_auto_fill_options3">Auto Fill URL</option>
+          <option value="autofill-keyword" data-lang="salt_auto_fill_options4">Auto Fill Keyword</option>
         </select>
       </label>
       <input type="text" id="salt" local-placeholder="salt_placeholder" placeholder="salt_placeholder" style="width: 250px;">

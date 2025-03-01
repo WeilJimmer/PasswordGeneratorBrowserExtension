@@ -1,3 +1,3 @@
-# PasswordGeneratorChromeExtension
+# PasswordGeneratorBrowserExtension
 
-Free, ad-free, open-source simple password generator for chrome.
+Free, ad-free, open-source simple password generator for browser.

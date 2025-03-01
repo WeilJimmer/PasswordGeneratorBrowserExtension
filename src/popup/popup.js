@@ -237,4 +237,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     document.querySelectorAll('[local-placeholder]').forEach(elem => {
         elem.placeholder = chrome.i18n.getMessage(elem.getAttribute("local-placeholder"))
     });
+    document.querySelectorAll('[data-lang]').forEach(elem => {
+        elem.innerText = chrome.i18n.getMessage(elem.getAttribute("data-lang"))
+    });
 });

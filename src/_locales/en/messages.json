@@ -1,6 +1,6 @@
 {
     "app_title": {
-        "message": "Password Generator for Chrome",
+        "message": "Password Generator",
         "description": "Name of the extension"
     },
     "options_number_checkbox": {
@@ -38,6 +38,22 @@
     "version_label": {
         "message": "Version",
         "description": "Label of Version"
+    },
+    "salt_auto_fill_options1": {
+        "message": "Do nothing",
+        "description": "Label of AutoFill Option"
+    },
+    "salt_auto_fill_options2": {
+        "message": "Auto Fill Domain",
+        "description": "Label of AutoFill Option"
+    },
+    "salt_auto_fill_options3": {
+        "message": "Auto Fill URL",
+        "description": "Label of AutoFill Option"
+    },
+    "salt_auto_fill_options4": {
+        "message": "Auto Fill Keyword",
+        "description": "Label of AutoFill Option"
     },
     "button_copy": {
         "message": "Copy",
