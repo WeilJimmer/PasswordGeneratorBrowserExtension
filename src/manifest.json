@@ -1,31 +1,36 @@
 {
   "name": "__MSG_app_title__",
+  "author": "me@weils.net",
+  "version": "1.1.0",
   "description": "Free, ad-free, open-source simple password generator.",
-  "version": "1.0.1",
-  "manifest_version": 3,
+  "homepage_url": "https://github.com/WeilJimmer/PasswordGeneratorBrowserExtension",
   "default_locale": "en",
+  "manifest_version": 3,
   "permissions": [
     "activeTab",
     "clipboardWrite",
     "storage"
   ],
-  "action": {
-    "default_popup": "popup/popup.html",
-    "default_icon": "logo.png"
-  },
-  "background": {
-    "service_worker": "background/background.js",
-    "type": "module"
-  },
-  "browser_specific_settings": {
-    "gecko": {
-      "id": "passwordgenerator@weils.net"
-    }
-  },
   "icons": {
     "16": "assets/icon/icon-16.png",
     "32": "assets/icon/icon-32.png",
     "48": "assets/icon/icon-48.png",
     "128": "assets/icon/icon-128.png"
+  },
+  "action": {
+    "default_popup": "popup/popup.html",
+    "default_icon": "logo.png"
+  },
+  "background": {
+    "service_worker": "background/background.js"
+  },
+  "options_ui": {
+    "page": "options/options.html",
+    "open_in_tab": true
+  },
+  "browser_specific_settings": {
+    "gecko": {
+      "id": "passwordgenerator@weils.net"
+    }
   }
 }

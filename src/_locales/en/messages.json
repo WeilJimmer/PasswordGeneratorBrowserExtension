@@ -47,6 +47,10 @@
         "message": "Generate",
         "description": "Button of Generate"
     },
+    "button_generate_copy": {
+        "message": "Generate&Copy",
+        "description": "Button of Generate&Copy"
+    },
     "button_reset": {
         "message": "Reset",
         "description": "Button of Reset"

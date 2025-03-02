@@ -47,6 +47,10 @@
         "message": "生成",
         "description": "Button of Generate"
     },
+    "button_generate_copy": {
+        "message": "生成&複製",
+        "description": "Button of Generate&Copy"
+    },
     "button_reset": {
         "message": "重置",
         "description": "Button of Reset"

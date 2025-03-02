@@ -1,0 +1,316 @@
+<!-- options.html by Weil Jimmer -->
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>擴展設定</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: system-ui, -apple-system, sans-serif;
+    }
+
+    .container {
+      min-height: 100vh;
+    }
+
+    .loading {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(255, 255, 255, 0.8);
+      text-align: center;
+      z-index: 9999;
+    }
+
+    .top-nav {
+      background: #f8f9fa;
+      border-bottom: 1px solid #dee2e6;
+      padding: 0 24px;
+      display: flex;
+      gap: 8px;
+    }
+
+    .nav-item {
+      padding: 8px 4px;
+      cursor: pointer;
+      color: #495057;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      border-bottom: 2px solid transparent;
+    }
+
+    .nav-item:hover {
+      background: #e9ecef;
+    }
+
+    .nav-item.active {
+      color: #228be6;
+      font-weight: 500;
+      border-bottom: 2px solid #228be6;
+    }
+
+    .main-content {
+      padding: 0px 16px;
+    }
+
+    .tab-content {
+      display: none;
+      animation: fadeIn 0.3s ease;
+    }
+
+    .tab-content.active {
+      display: block;
+      position: relative;
+    }
+
+    #settingsForm {
+      max-width: 500px;
+      margin: 0 auto;
+    }
+
+    .form-group {
+      margin-bottom: 16px;
+    }
+
+    .form-group label {
+      display: block;
+      margin-bottom: 8px;
+      color: #495057;
+    }
+
+    .form-control {
+      max-width: 300px;
+      padding: 8px;
+      border: 1px solid #dee2e6;
+      border-radius: 4px;
+    }
+
+    .btn {
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-weight: 500;
+    }
+
+    .btn-primary {
+      background: #228be6;
+      color: white;
+    }
+
+    .btn-primary:hover {
+      background: #1c7ed6;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    .history-table {
+      width: 100%;
+      table-layout: fixed;
+      border-collapse: collapse;
+      margin: 16px 0px;
+    }
+
+    .history-table th,
+    .history-table td {
+      padding: 12px;
+      border: 1px solid #dee2e6;
+      text-align: left;
+      white-space: nowrap;
+      overflow: auto;
+    }
+
+    .history-table th {
+      background: #f8f9fa;
+    }
+
+    td {
+      white-space: nowrap;
+      overflow: scroll;
+    }
+
+
+    @media (min-width: 801px) {
+      .history-table td {
+        white-space: nowrap;
+      }
+    }
+
+    @media (max-width: 800px) {
+      .history-table,
+      .history-table thead,
+      .history-table tbody,
+      .history-table th,
+      .history-table td,
+      .history-table tr {
+        display: block;
+        width: 100%;
+        box-sizing: border-box;
+      }
+
+      .history-table thead tr {
+        position: absolute;
+        top: -9999px;
+        left: -9999px;
+      }
+
+      .history-table tr {
+        margin-bottom: 15px;
+        border: 1px solid #ccc;
+      }
+
+      .history-table td {
+        border: none;
+        border-bottom: 1px solid #eee;
+        position: relative;
+        padding-left: 40%;
+        white-space: normal;
+      }
+
+      .history-table td:before {
+        position: absolute;
+        top: 12px;
+        left: 12px;
+        width: 35%;
+        padding-right: 10px;
+        font-weight: bold;
+      }
+
+      .history-table td:nth-of-type(1):before { content: "時間"; }
+      .history-table td:nth-of-type(2):before { content: "參數"; }
+      .history-table td:nth-of-type(3):before { content: "鹽"; }
+      .history-table td:nth-of-type(4):before { content: "密碼"; }
+      .history-table td:nth-of-type(5):before { content: "動作"; }
+    }
+  </style>
+</head>
+<body>
+  <!-- loading block -->
+  <div id="loading" class="loading">
+    <div style="display:block;margin:20% auto;width:60px;">
+      <img src="../assets/images/loading.svg" alt="loading" style="width: 100%;">
+      <br>
+      <span id="block_message">Loading Setting..</span>
+    </div>
+  </div>
+  <div class="container">
+    <!-- top navigation -->
+    <div class="top-nav">
+      <div class="nav-item active" data-tab="settings">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z"/>
+          <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1Z"/>
+        </svg>
+        設定
+      </div>
+      <div class="nav-item" data-tab="history">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M12 8v4l3 3"/>
+          <circle cx="12" cy="12" r="10"/>
+        </svg>
+        歷史記錄
+      </div>
+      <div class="nav-item" data-tab="about">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="12" cy="12" r="10"/>
+          <circle cx="12" cy="8" r="1"/>
+          <path d="M12 17v-5"/>
+        </svg>
+        關於
+      </div>
+    </div>
+
+    <!-- main content -->
+    <div class="main-content">
+      <!-- settings -->
+      <div id="settings" class="tab-content active">
+        <h2>設定</h2>
+        <form id="settingsForm">
+          <div class="form-group">
+            <div class="form-group">
+              <input type="checkbox" id="remember_generated_parameter_into_history" checked="checked">
+              <label for="remember_generated_parameter_into_history">啟動參數歷史紀錄</label>
+            </div>
+            <input type="checkbox" id="remember_generated_random_password_into_history" checked="checked">
+            <label for="remember_generated_random_password_into_history">儲存生成的隨機密碼到歷史紀錄</label>
+          </div>
+          <div class="form-group">
+            <input type="checkbox" id="remember_generated_fixed_password_into_history">
+            <label for="remember_generated_fixed_password_into_history">儲存生成的固定密碼到歷史紀錄</label>
+          </div>
+          <div class="form-group">
+            <input type="checkbox" id="auto_search_history" checked="checked">
+            <label for="auto_search_history">自動搜尋匹配的歷史紀錄並載入參數</label>
+          </div>
+          <div class="form-group">
+            <input type="checkbox" id="storge_cloud_sync" checked="checked">
+            <label for="storge_cloud_sync">同步設定和歷史紀錄到瀏覽器提供者的雲端</label>
+          </div>
+          <div class="form-group">
+            <input type="checkbox" id="remember_last_parameters">
+            <label for="remember_last_parameters">記住最後所用的參數</label>
+          </div>
+          <div class="form-group">
+            <input type="checkbox" id="remember_master_password">
+            <label for="remember_master_password">記住主密碼 (危險)</label>
+          </div>
+          <div class="form-group">
+            <input type="checkbox" id="hide_generated_pw">
+            <label for="hide_generated_pw">隱藏生成的密碼</label>
+          </div>
+          <div class="form-group">
+            <label for="forgot_password">自動忘記主密碼 (秒)</label>
+            <input type="number" class="form-control" id="forgot_password" min="0" max="60" value="20">
+          </div>
+          <div class="form-group">
+            <label for="max_history">上限紀錄筆數</label>
+            <input type="number" class="form-control" id="max_history" min="1" max="100" value="100">
+          </div>
+          <button type="submit" class="btn btn-primary" id="save_settings">儲存設定</button>
+        </form>
+      </div>
+
+      <!-- history -->
+      <div id="history" class="tab-content">
+        <h2>歷史記錄</h2>
+        <div style="position:absolute;right: 0;top: 0;">
+          <button class="btn btn-primary" id="refreshHistoryBtn" >刷新</button>
+          <button class="btn btn-primary" id="clearHistoryBtn" >清除全部</button>
+        </div>
+        <table class="history-table">
+          <thead>
+            <tr>
+              <th>時間</th>
+              <th>參數</th>
+              <th>鹽</th>
+              <th>密碼</th>
+              <th>動作</th>
+            </tr>
+          </thead>
+          <tbody id="historyTableBody">
+          </tbody>
+        </table>
+      </div>
+
+      <!-- about -->
+      <div id="about" class="tab-content">
+        <h2>關於</h2>
+        <p>版本: <span id="versionSpan">1.0</span></p>
+        <p>作者: Weil Jimmer</p>
+        <p>網站: <a href="https://weils.net/" target="_blank">https://weils.net/</a><br>　　 &nbsp;<a href="https://wbftw.org/" target="_blank">https://wbftw.org/</a></p>
+        <p>原始碼: <a id="sourceCodeLink" href="https://github.com/WeilJimmer/PasswordGeneratorBrowserExtension" target="_blank">(github) https://github.com/WeilJimmer/PasswordGeneratorBrowserExtension</a>
+        <p><span id="descriptSpan">(description) Free, ad-free, open-source simple password generator.</span></p>
+      </div>
+    </div>
+  </div>
+  <script src="options.js" type="module" defer></script>
+  <script src="../modules/heartbeat.js" type="module" defer></script>
+</body>
+</html>

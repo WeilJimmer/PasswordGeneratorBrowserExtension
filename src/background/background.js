@@ -1,5 +1,12 @@
 // background.js
-import { DEFAULT_CONST } from '../modules/constants.js';
+// Author: Weil Jimmer
+// Description: This file is the background script for the Chrome extension. It initializes the StateManager class and listens for messages from the content script.
+// The StateManager class is responsible for managing the state of the extension and handling messages from the content script.
+
+import { HistoryItem } from '../modules/history.js';
+import { StorageManager } from '../modules/storage.js';
+
+var stateManager = null;
 
 class StateManager {
 
@@ -7,30 +14,49 @@ class StateManager {
         this.isInitialized = false;
         this.state = new Map();
         this.cleanupTimes = new Map();
+        this.storageManager = new StorageManager();
+        this.ui_state = (new HistoryItem()).history; // dictionary
+        this.syncInterval = null;
+        this.syncIntervalTime = 5000; // 5秒檢查一次
         this.setupMessageHandler();
         this.setupAutoCleanup();
         this.init();
     }
 
-    sendPasswordResult(password, checksum) {
+    sendHistoryResult(history) {
+        try{
+            chrome.runtime.sendMessage({type: 'HISTORY_RESULT', data: history});
+        }catch(error){
+            console.error('Failed to send history result:', error);
+        }
+    }
+
+    sendPasswordResult(password, checksum, is_password_saved = false, parameters = null, mode = 0) {
         try{
             chrome.runtime.sendMessage({
                 type: 'PASSWORD_GENERATED',
                 data: {
                     password: password,
-                    checksum: checksum
+                    checksum: checksum,
+                    need_copy: mode===2
                 }
             });
         }catch(error){
             console.error('Failed to send password result:', error);
         }
-    }
-
-    getState(key, _default = null) {
-        if (this.state.has(key)) {
-            return this.state.get(key);
+        // save history
+        if (parameters!=null && this.storageManager!=null && mode>=1){
+            let is_parameter_saved = this.getSettings("remember_generated_parameter_into_history", true);
+            let historyItem = new HistoryItem();
+            historyItem.history.pw = (is_password_saved ? password : '');
+            if (is_parameter_saved){
+                historyItem.setFromMap(parameters);
+            }
+            if (is_parameter_saved || is_password_saved){
+                historyItem.packHistory();
+                this.storageManager.addHistoryItem(historyItem);
+            }
         }
-        return _default;
     }
 
     async getPopupContext() {
@@ -60,24 +86,47 @@ class StateManager {
     }
 
     async init() {
-        try {
-            this.isInitialized = true;
-            this.sendMessageToPopup({
-                type: 'BACKGROUND_INITIALIZED',
-                data: { timestamp: Date.now() }
-            });
-        } catch (error) {
-            console.log('Background initialization failed:', error);
+        this.storageManager = new StorageManager();
+        this.storageManager.loadStorage();
+        this.syncUIState();
+        this.isInitialized = true;
+        this.startSyncInterval();
+    }
+
+    startSyncInterval() {
+        if (this.syncInterval) {
+            clearInterval(this.syncInterval);
+        }
+        this.syncInterval = setInterval(() => {
+            this.checkAndSync();
+        }, this.syncIntervalTime);
+        console.log(`Sync interval started: checking every ${this.syncIntervalTime/1000} seconds`);
+    }
+
+    stopSyncInterval() {
+        if (this.syncInterval) {
+            clearInterval(this.syncInterval);
+            this.syncInterval = null;
+            console.log('Sync interval stopped');
         }
     }
 
-    async generatePassword(map, mode=0) {
-        let length = this.getState('length', DEFAULT_CONST.LENGTH);
-        let symbols_char = this.getState('symbols_char', DEFAULT_CONST.SYMBOLS_CHAR);
-        let numbers_checked = this.getState('numbers_checked', DEFAULT_CONST.NUMBERS_CHECKED);
-        let symbols_checked = this.getState('symbols_checked', DEFAULT_CONST.SYMBOLS_CHECKED);
-        let uppercase_checked = this.getState('uppercase_checked', DEFAULT_CONST.UPPERCASE_CHECKED);
-        let lowercase_checked = this.getState('lowercase_checked', DEFAULT_CONST.LOWERCASE_CHECKED);
+    async checkAndSync(force_save=false) {
+        if (this.storageManager!=null){
+            if (this.getSettings("storge_cloud_sync", false)){
+                await this.storageManager.checkAndSync(force_save);
+                console.log('Synced storage to cloud');
+            }
+        }
+    }
+
+    async generatePassword(map, saved=false, mode=0) {
+        let length = map.pwlength;
+        let symbols_char = map.symbols;
+        let numbers_checked = map.numbersChecked;
+        let symbols_checked = map.symbolsChecked;
+        let uppercase_checked = map.uppercaseChecked;
+        let lowercase_checked = map.lowercaseChecked;
         if (!numbers_checked && !uppercase_checked && !lowercase_checked && !symbols_checked) {
             this.sendPasswordResult('至少勾選一種類別', 'ERROR');
             return;
@@ -94,19 +143,19 @@ class StateManager {
             var randomIndex = byte[0] % charset.length;
             password += charset.charAt(randomIndex);
         }
-        this.sendPasswordResult(password, 'RANDOM');
+        this.sendPasswordResult(password, 'RANDOM', saved, map, mode);
     }
 
-    async generateSlavePassword(map, mode=0){
-        let version = this.getState('version', DEFAULT_CONST.VERSION);
-        let salt = this.getState('salt', DEFAULT_CONST.SALT);
-        let length = this.getState('length', DEFAULT_CONST.LENGTH);
-        let symbols_char = this.getState('symbols_char', DEFAULT_CONST.SYMBOLS_CHAR);
-        let master_password = this.getState('master_password', DEFAULT_CONST.MASTER_PASSWORD);
-        let numbers_checked = this.getState('numbers_checked', DEFAULT_CONST.NUMBERS_CHECKED);
-        let symbols_checked = this.getState('symbols_checked', DEFAULT_CONST.SYMBOLS_CHECKED);
-        let uppercase_checked = this.getState('uppercase_checked', DEFAULT_CONST.UPPERCASE_CHECKED);
-        let lowercase_checked = this.getState('lowercase_checked', DEFAULT_CONST.LOWERCASE_CHECKED);
+    async generateSlavePassword(map, saved=false, mode=0){
+        let uppercase_checked = map.uppercaseChecked;
+        let lowercase_checked = map.lowercaseChecked;
+        let numbers_checked = map.numbersChecked;
+        let symbols_checked = map.symbolsChecked;
+        let symbols_char = map.symbols;
+        let version = map.version;
+        let length = map.pwlength;
+        let salt = map.salt;
+        let master_password = map.pw;
         if (master_password.length == 0) {
             this.sendPasswordResult('主密碼不可為空！', 'ERROR');
             return '';
@@ -144,7 +193,7 @@ class StateManager {
             let pos = parseInt(combine_binary_password.substring(i * 7, i * 7 + 7), 2) % charset_length;
             finalPassword += charset.charAt(pos);
         }
-        this.sendPasswordResult(finalPassword, master_hash_hex);
+        this.sendPasswordResult(finalPassword, master_hash_hex, saved, map, mode);
     }
 
     setupMessageHandler() {
@@ -154,30 +203,78 @@ class StateManager {
                     case 'CHECK_INIT_STATUS':
                         sendResponse({ isInitialized: this.isInitialized });
                         break;
+                    case 'HEARTBEAT':
+                        sendResponse({ success: true });
+                        break;
                     case 'GET_STATE':
-                        sendResponse({
-                            success: true,
-                            data: this.state.get(message.key)
-                        });
+                        sendResponse({ success: true, data: this.getUIState(message.key) });
                         break;
                     case 'SET_STATE':
-                        this.setState(message.key, message.data, message.options);
+                        this.setUIState(message.key, message.data, message.options);
                         sendResponse({ success: true });
                         break;
-                    case 'DELETE_STATE':
-                        this.state.delete(message.key);
-                        sendResponse({ success: true });
-                        break;
-                    case 'CLEAR_ALL':
-                        this.state.clear();
+                    case 'CLEAR_ALL_STATES':
+                        this.ui_state = (new HistoryItem()).history; // dictionary
+                        if (this.storageManager!=null){
+                            this.storageManager.clearUIState();
+                        }
                         this.cleanupTimes.clear();
                         sendResponse({ success: true });
                         break;
+                    case 'GET_SETTINGS':
+                        sendResponse({ success: true, data: this.getSettings(message.key) });
+                        break;
+                    case 'SET_SETTINGS':
+                        sendResponse({ success: this.setSettings(message.key, message.data) });
+                        break;
+                    case 'SAVE_SETTINGS':
+                        if (this.storageManager!=null){
+                            this.storageManager.saveSettingsToLocal();
+                            sendResponse({ success: true });
+                        }else{
+                            console.error('StorageManager is not initialized.');
+                            sendResponse({ success: false });
+                        }
+                        break;
+                    case 'GET_HISTORYS':
+                        if (this.storageManager!=null){
+                            sendResponse({ success: true, data: this.storageManager.getHistory() });
+                        }else{
+                            console.error('StorageManager is not initialized.');
+                            sendResponse({ success: false, data: [] });
+                        }
+                        break;
+                    case 'DELETE_HISTORY':
+                        if (this.storageManager!=null){
+                            sendResponse({ success: this.storageManager.deleteHistoryItem(message.key, message.timestamp) });
+                        }else{
+                            console.error('StorageManager is not initialized.');
+                            sendResponse({ success: false });
+                        }
+                        break;
+                    case 'CLEAR_HISTORY':
+                        if (this.storageManager!=null){
+                            this.storageManager.clearHistory();
+                            sendResponse({ success: true });
+                        }else{
+                            console.error('StorageManager is not initialized.');
+                            sendResponse({ success: false });
+                        }
+                        break;
+                    case 'SEARCH_HISTORY':
+                        if (this.storageManager!=null){
+                            sendResponse({ success: true, found: this.storageManager.searchAndApplyHistory(message.key) });
+                        }else{
+                            console.error('StorageManager is not initialized.');
+                            sendResponse({ success: false, found: false });
+                        }
+                        break;
                     case 'GENERATE_PASSWORD':
-                        if (this.getState('master_password', DEFAULT_CONST.MASTER_PASSWORD).length == 0) {
-                            this.generatePassword(this.state, message.mode);
+                        let trigger = message.mode; // 0: event trigger = always don't save in history, 1: human trigger
+                        if (this.ui_state.pw.length == 0) {
+                            this.generatePassword( this.ui_state, this.getSettings("remember_generated_random_password_into_history", true), trigger);
                         } else {
-                            this.generateSlavePassword(this.state, message.mode);
+                            this.generateSlavePassword(this.ui_state, this.getSettings("remember_generated_fixed_password_into_history", false), trigger);
                         }
                         sendResponse({ success: true, status: 'processing' });
                         break;
@@ -191,18 +288,51 @@ class StateManager {
         });
     }
 
-    setState(key, value, options = {ttl:10}) {
-        this.state.set(key, value);
+    getUIState(key, _default = null) {
+        if (this.storageManager!=null){
+            return this.storageManager.getUIState(key);
+        }
+        if (key in this.ui_state) {
+            console.error('storage not ready, use memory value.');
+            return this.ui_state[key];
+        }
+        return _default;
+    }
+
+    setUIState(key, value, options = {ttl:10}) {
+        if (this.storageManager!=null){
+            this.storageManager.setUIState(key, value);
+            this.syncUIState();
+        }else{
+            console.error('StorageManager is not initialized. set value to memory.');
+            this.ui_state[key] = value;
+        }
         if (options.ttl>0) {
             if (this.cleanupTimes.has(key)) {
                 clearTimeout(this.cleanupTimes.get(key));
             }
             const timeoutId = setTimeout(() => {
-                this.state.delete(key);
+                let default_value = new HistoryItem().history[key];
+                this.setUIState(key, default_value, {ttl:0});
                 this.cleanupTimes.delete(key);
             }, options.ttl);
             this.cleanupTimes.set(key, timeoutId);
         }
+    }
+
+    setSettings(key, value) {
+        if (this.storageManager!=null){
+            this.storageManager.setSettings(key, value);
+            return true;
+        }
+        return false;
+    }
+
+    getSettings(key, _default = null) {
+        if (this.storageManager!=null){
+            return this.storageManager.getSettings(key);
+        }
+        return _default
     }
 
     setupAutoCleanup() {
@@ -213,5 +343,44 @@ class StateManager {
         });
     }
 
+    syncUIState() {
+        if (this.storageManager!=null){
+            this.ui_state = this.storageManager.getUIState(); //return dictionary
+        }
+    }
+
 }
-const stateManager = new StateManager();
+
+
+if (stateManager === null) {
+    console.log('init StateManager');
+    stateManager = new StateManager();
+}
+
+chrome.runtime.onInstalled.addListener(async (details) => {
+    switch (details.reason) {
+        case 'install':
+            console.log('plugin install first time');
+            break;
+        case 'update':
+            console.log(`plugin update from version ${details.previousVersion}.`);
+            break;
+        case 'chrome_update':
+            console.log('Chrome update');
+            break;
+        case 'shared_module_update':
+            console.log('module update');
+            break;
+    }
+    if (stateManager === null) {
+        stateManager = new StateManager();
+    }
+});
+
+chrome.runtime.onSuspend.addListener(async () => {
+    console.log('Service Worker has been killing...');
+    if (stateManager !== null) {
+        await stateManager.checkAndSync();
+        console.log('storage saved!');
+    }
+});
