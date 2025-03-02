@@ -27,10 +27,5 @@
   "options_ui": {
     "page": "options/options.html",
     "open_in_tab": true
-  },
-  "browser_specific_settings": {
-    "gecko": {
-      "id": "passwordgenerator@weils.net"
-    }
   }
 }
