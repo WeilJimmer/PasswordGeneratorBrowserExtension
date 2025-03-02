@@ -63,6 +63,14 @@
         "message": "生成",
         "description": "Button of Generate"
     },
+    "button_delete": {
+        "message": "清除",
+        "description": "Button of Delete"
+    },
+    "button_save": {
+        "message": "儲存",
+        "description": "Button of Save"
+    },
     "button_generate_copy": {
         "message": "生成&複製",
         "description": "Button of Generate&Copy"
@@ -78,5 +86,153 @@
     "message_copied_to_clipboard": {
         "message": "已複製到剪貼簿！",
         "description": "Message of Copied to clipboard"
+    },
+    "message_copied_to_clipboard_fail": {
+        "message": "複製到剪貼簿失敗！",
+        "description": "Message of Copied to clipboard"
+    },
+    "title_options": {
+        "message": "擴展設定",
+        "description": "Title of Options page"
+    },
+    "message_settings_saved": {
+        "message": "設定已儲存",
+        "description": "Message of saved settings"
+    },
+    "message_settings_saved_error": {
+        "message": "儲存設定失敗",
+        "description": "Message of saved settings error"
+    },
+    "message_history_updated": {
+        "message": "歷史記錄已更新",
+        "description": "History is updated"
+    },
+    "message_th_time": {
+        "message": "時間",
+        "description": "Time"
+    },
+    "message_th_parameter": {
+        "message": "參數",
+        "description": "Parameter"
+    },
+    "message_th_salt": {
+        "message": "鹽",
+        "description": "Salt"
+    },
+    "message_th_pw": {
+        "message": "密碼",
+        "description": "Password"
+    },
+    "message_th_action": {
+        "message": "動作",
+        "description": "Action"
+    },
+    "nav_tab_settings": {
+        "message": "設定",
+        "description": "Settings"
+    },
+    "nav_tab_history": {
+        "message": "歷史記錄",
+        "description": "History"
+    },
+    "nav_tab_about": {
+        "message": "關於",
+        "description": "About"
+    },
+    "settings_options_parameter_history": {
+        "message": "啟動參數歷史紀錄",
+        "description": "Enable parameter history"
+    },
+    "settings_options_save_randompw_history": {
+        "message": "儲存生成的隨機密碼到歷史紀錄",
+        "description": "Save generated random passwords to history"
+    },
+    "settings_options_save_fixedpw_history": {
+        "message": "儲存生成的固定密碼到歷史紀錄",
+        "description": "Save generated fixed passwords to history"
+    },
+    "settings_options_search_matched_history": {
+        "message": "自動搜尋匹配的歷史紀錄並載入參數",
+        "description": "Automatically search for matching history and load parameters"
+    },
+    "settings_options_sync_to_cloud": {
+        "message": "同步設定和歷史紀錄到瀏覽器提供者的雲端",
+        "description": "Sync settings and history to browser provider's cloud"
+    },
+    "settings_options_remember_last_parameter": {
+        "message": "記住最後所用的參數",
+        "description": "Remember last used parameters"
+    },
+    "settings_options_remember_master_password": {
+        "message": "記住主密碼 (危險)",
+        "description": "Remember master password (dangerous)"
+    },
+    "settings_options_hide_generated_password": {
+        "message": "隱藏生成的密碼",
+        "description": "Hide generated password"
+    },
+    "settings_options_forgot_password_expire_times": {
+        "message": "自動忘記主密碼 (秒)",
+        "description": "Automatically forget master password (seconds)"
+    },
+    "settings_options_max_history": {
+        "message": "上限紀錄筆數",
+        "description": "Maximum number of history records"
+    },
+    "settings_options_parameter_history_description": {
+        "message": "打勾這個選項後，所有按下「生成」按鈕的參數都會被紀錄到歷史紀錄。",
+        "description": "When this option is checked, all parameters used when clicking the 'Generate' button will be recorded in the history."
+    },
+    "settings_options_save_randompw_history_description": {
+        "message": "打勾這個選項後，所有生成的隨機密碼都會被紀錄到歷史紀錄。",
+        "description": "When this option is checked, all generated random passwords will be recorded in the history."
+    },
+    "settings_options_save_fixedpw_history_description": {
+        "message": "打勾這個選項後，所有生成的固定密碼都會被紀錄到歷史紀錄。",
+        "description": "When this option is checked, all generated fixed passwords will be recorded in the history."
+    },
+    "settings_options_search_matched_history_description": {
+        "message": "打勾這個選項後，當輸入參數時會自動搜尋歷史紀錄中匹配相同的鹽值的紀錄，載入其參數。",
+        "description": "When this option is checked, it will automatically search for records in the history that match the same salt value when entering parameters, and load those parameters."
+    },
+    "settings_options_sync_to_cloud_description": {
+        "message": "打勾這個選項後，所有設定和歷史紀錄都會被同步到瀏覽器提供者的雲端，以便在不同裝置上使用相同的設定和歷史紀錄。",
+        "description": "When this option is checked, all settings and history will be synchronized to the browser provider's cloud, allowing you to use the same settings and history on different devices."
+    },
+    "settings_options_remember_last_parameter_description": {
+        "message": "打勾這個選項後，當重新開啟擴展時會自動載入最後所用的參數。",
+        "description": "When this option is checked, the last used parameters will be automatically loaded when reopening the extension."
+    },
+    "settings_options_remember_master_password_description": {
+        "message": "打勾這個選項後，主密碼會被儲存在擴展套件中，其他人有可能會因此竊取您的密碼。",
+        "description": "When this option is checked, the master password will be stored in the extension, which may allow others to steal your password."
+    },
+    "settings_options_hide_generated_password_description": {
+        "message": "打勾這個選項後，生成的密碼將會被隱藏，並且需要點擊「顯示」按鈕才能看到。",
+        "description": "When this option is checked, the generated password will be hidden and you will need to click the 'Show' button to see it."
+    },
+    "settings_options_forgot_password_expire_times_description": {
+        "message": "過一段時間後，自動遺忘主密碼，設定為 0 將不會自動忘記主密碼。",
+        "description": "After a period of time, automatically forget the master password. Setting to 0 will not automatically forget the master password."
+    },
+    "settings_options_max_history_description": {
+        "message": "設定歷史紀錄的上限筆數，超過上限的紀錄將會被刪除。",
+        "description": "Set the maximum number of history records. Records exceeding the limit will be deleted."
+    },
+    "message_version": {
+        "message": "版本",
+        "description": "Version"
+    },
+    "message_author": {
+        "message": "作者",
+        "description": "Author"
+    },
+    "message_website": {
+        "message": "網站",
+        "description": "Website"
+    },
+    "message_source": {
+        "message": "原始碼",
+        "description": "Source code"
     }
 }

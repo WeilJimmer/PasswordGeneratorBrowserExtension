@@ -4,7 +4,7 @@
 <head>
   <meta http-equiv="content-type" content="text/html; charset=utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>擴展設定</title>
+  <title data-lang="title_options">擴展設定</title>
   <style>
     body {
       margin: 0;
@@ -133,9 +133,11 @@
 
     td {
       white-space: nowrap;
-      overflow: scroll;
     }
 
+    .of {
+      overflow: auto;
+    }
 
     @media (min-width: 801px) {
       .history-table td {
@@ -234,43 +236,62 @@
         <h2>設定</h2>
         <form id="settingsForm">
           <div class="form-group">
-            <div class="form-group">
-              <input type="checkbox" id="remember_generated_parameter_into_history" checked="checked">
-              <label for="remember_generated_parameter_into_history">啟動參數歷史紀錄</label>
-            </div>
+            <input type="checkbox" id="remember_generated_parameter_into_history" checked="checked">
+            <label for="remember_generated_parameter_into_history">啟動參數歷史紀錄</label>
+            <small>打勾這個選項後，所有按下「生成」按鈕的參數都會被紀錄到歷史紀錄。</small>
+          </div>
+          <hr>
+          <div class="form-group">
             <input type="checkbox" id="remember_generated_random_password_into_history" checked="checked">
             <label for="remember_generated_random_password_into_history">儲存生成的隨機密碼到歷史紀錄</label>
+            <small>打勾這個選項後，所有生成的隨機密碼都會被紀錄到歷史紀錄。</small>
           </div>
+          <hr>
           <div class="form-group">
             <input type="checkbox" id="remember_generated_fixed_password_into_history">
             <label for="remember_generated_fixed_password_into_history">儲存生成的固定密碼到歷史紀錄</label>
+            <small>打勾這個選項後，所有生成的固定密碼都會被紀錄到歷史紀錄。</small>
           </div>
+          <hr>
           <div class="form-group">
             <input type="checkbox" id="auto_search_history" checked="checked">
             <label for="auto_search_history">自動搜尋匹配的歷史紀錄並載入參數</label>
+            <small>打勾這個選項後，當輸入參數時會自動搜尋歷史紀錄中匹配相同的鹽值的紀錄，載入其參數。</small>
           </div>
+          <hr>
           <div class="form-group">
             <input type="checkbox" id="storge_cloud_sync" checked="checked">
             <label for="storge_cloud_sync">同步設定和歷史紀錄到瀏覽器提供者的雲端</label>
+            <small>打勾這個選項後，所有設定和歷史紀錄都會被同步到瀏覽器提供者的雲端，以便在不同裝置上使用相同的設定和歷史紀錄。</small>
           </div>
+          <hr>
           <div class="form-group">
             <input type="checkbox" id="remember_last_parameters">
             <label for="remember_last_parameters">記住最後所用的參數</label>
+            <small>打勾這個選項後，當重新開啟擴展時會自動載入最後所用的參數。</small>
           </div>
+          <hr>
           <div class="form-group">
             <input type="checkbox" id="remember_master_password">
             <label for="remember_master_password">記住主密碼 (危險)</label>
+            <small>打勾這個選項後，主密碼會被儲存在擴展套件中，其他人有可能會因此竊取您的密碼。</small>
           </div>
+          <hr>
           <div class="form-group">
             <input type="checkbox" id="hide_generated_pw">
             <label for="hide_generated_pw">隱藏生成的密碼</label>
+            <small>打勾這個選項後，生成的密碼將會被隱藏，並且需要點擊「顯示」按鈕才能看到。</small>
           </div>
+          <hr>
           <div class="form-group">
             <label for="forgot_password">自動忘記主密碼 (秒)</label>
+            <small>過一段時間後，自動遺忘主密碼，設定為 0 將不會自動忘記主密碼。</small><br>
             <input type="number" class="form-control" id="forgot_password" min="0" max="60" value="20">
           </div>
+          <hr>
           <div class="form-group">
             <label for="max_history">上限紀錄筆數</label>
+            <small>設定歷史紀錄的上限筆數，超過上限的紀錄將會被刪除。</small><br>
             <input type="number" class="form-control" id="max_history" min="1" max="100" value="100">
           </div>
           <button type="submit" class="btn btn-primary" id="save_settings">儲存設定</button>

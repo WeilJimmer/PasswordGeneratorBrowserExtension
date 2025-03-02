@@ -71,6 +71,10 @@
         "message": "Reset",
         "description": "Button of Reset"
     },
+    "button_delete": {
+        "message": "Delete",
+        "description": "Button of Delete"
+    },
     "region_generated_password_label": {
         "message": "(Generated Password)",
         "description": "Label of Generated Password"
@@ -78,5 +82,152 @@
     "message_copied_to_clipboard": {
         "message": "Copied to clipboard!",
         "description": "Message of Copied to clipboard"
+    },
+    "message_copied_to_clipboard_fail": {
+        "message": "Failed to copy to clipboard!",
+        "description": "Message of Copied to clipboard"
+    },"title_options": {
+        "message": "Extension Settings",
+        "description": "Title of Options page"
+    },
+    "message_settings_saved": {
+        "message": "Settings saved",
+        "description": "Message of saved settings"
+    },
+    "message_settings_saved_error": {
+        "message": "Failed to save settings",
+        "description": "Message of saved settings error"
+    },
+    "message_history_updated": {
+        "message": "History updated",
+        "description": "Notification when history is updated"
+    },
+    "message_th_time": {
+        "message": "Time",
+        "description": "Column header for time in history table"
+    },
+    "message_th_parameter": {
+        "message": "Parameter",
+        "description": "Column header for parameter in history table"
+    },
+    "message_th_salt": {
+        "message": "Salt",
+        "description": "Column header for salt value in history table"
+    },
+    "message_th_pw": {
+        "message": "Password",
+        "description": "Column header for password in history table"
+    },
+    "message_th_action": {
+        "message": "Action",
+        "description": "Column header for actions in history table"
+    },
+    "nav_tab_settings": {
+        "message": "Settings",
+        "description": "Navigation tab label for settings page"
+    },
+    "nav_tab_history": {
+        "message": "History",
+        "description": "Navigation tab label for history page"
+    },
+    "nav_tab_about": {
+        "message": "About",
+        "description": "Navigation tab label for about page"
+    },
+    "settings_options_parameter_history": {
+        "message": "Enable parameter history",
+        "description": "Option to enable parameter history tracking"
+    },
+    "settings_options_save_randompw_history": {
+        "message": "Save generated random passwords to history",
+        "description": "Option to save randomly generated passwords to history"
+    },
+    "settings_options_save_fixedpw_history": {
+        "message": "Save generated fixed passwords to history",
+        "description": "Option to save fixed generated passwords to history"
+    },
+    "settings_options_search_matched_history": {
+        "message": "Automatically search matching history and load parameters",
+        "description": "Option to auto-search history for matching parameters"
+    },
+    "settings_options_sync_to_cloud": {
+        "message": "Sync settings and history to browser cloud",
+        "description": "Option to enable cloud synchronization"
+    },
+    "settings_options_remember_last_parameter": {
+        "message": "Remember last used parameters",
+        "description": "Option to remember the last used parameters"
+    },
+    "settings_options_remember_master_password": {
+        "message": "Remember master password (dangerous)",
+        "description": "Option to store master password with security warning"
+    },
+    "settings_options_hide_generated_password": {
+        "message": "Hide generated password",
+        "description": "Option to hide generated passwords by default"
+    },
+    "settings_options_forgot_password_expire_times": {
+        "message": "Auto-forget master password (seconds)",
+        "description": "Option to set timeout for forgetting master password"
+    },
+    "settings_options_max_history": {
+        "message": "Maximum history records",
+        "description": "Option to set maximum number of history entries"
+    },
+    "settings_options_parameter_history_description": {
+        "message": "When checked, all parameters used with the 'Generate' button will be recorded in history.",
+        "description": "Detailed explanation of parameter history option"
+    },
+    "settings_options_save_randompw_history_description": {
+        "message": "When checked, all generated random passwords will be saved to history.",
+        "description": "Detailed explanation of random password history option"
+    },
+    "settings_options_save_fixedpw_history_description": {
+        "message": "When checked, all generated fixed passwords will be saved to history.",
+        "description": "Detailed explanation of fixed password history option"
+    },
+    "settings_options_search_matched_history_description": {
+        "message": "When checked, the system will automatically search history for matching salt values and load the corresponding parameters.",
+        "description": "Detailed explanation of auto-search history option"
+    },
+    "settings_options_sync_to_cloud_description": {
+        "message": "When checked, all settings and history will be synchronized to your browser's cloud, allowing you to use the same configuration across different devices.",
+        "description": "Detailed explanation of cloud sync option"
+    },
+    "settings_options_remember_last_parameter_description": {
+        "message": "When checked, the extension will automatically load the last used parameters when reopened.",
+        "description": "Detailed explanation of remember parameters option"
+    },
+    "settings_options_remember_master_password_description": {
+        "message": "When checked, the master password will be stored in the extension, which could potentially allow others to access your passwords.",
+        "description": "Detailed explanation of master password storage option with security warning"
+    },
+    "settings_options_hide_generated_password_description": {
+        "message": "When checked, generated passwords will be hidden by default and will require clicking a 'Show' button to view.",
+        "description": "Detailed explanation of hiding generated passwords option"
+    },
+    "settings_options_forgot_password_expire_times_description": {
+        "message": "After the specified time period, the master password will be automatically forgotten. Setting to 0 will disable this feature.",
+        "description": "Detailed explanation of master password timeout option"
+    },
+    "settings_options_max_history_description": {
+        "message": "Sets the maximum number of history records to keep. Older records will be deleted when this limit is reached.",
+        "description": "Detailed explanation of maximum history records option"
+    },
+    "message_version": {
+        "message": "Version",
+        "description": "Label for version information"
+    },
+    "message_author": {
+        "message": "Author",
+        "description": "Label for author information"
+    },
+    "message_website": {
+        "message": "Website",
+        "description": "Label for website link"
+    },
+    "message_source": {
+        "message": "Source Code",
+        "description": "Label for source code repository link"
     }
 }

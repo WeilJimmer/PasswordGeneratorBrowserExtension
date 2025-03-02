@@ -2,7 +2,7 @@
 // Author: Weil Jimmer
 
 import toastr from 'toastr';
-import 'toastr/build/toastr.min.css';  // 別忘了導入 CSS
+import 'toastr/build/toastr.min.css';
 
 import '../modules/heartbeat.js';
 import { SMW } from '../modules/state.js';
@@ -110,9 +110,9 @@ class OptionsManager {
         document.getElementById('settingsForm').addEventListener('submit', (e) => {
             e.preventDefault();
             if (SMW.save_all()){
-                this.showMessage('設定已儲存');
+                this.showMessage(chrome.i18n.getMessage('message_settings_saved'));
             }else{
-                this.showMessage('儲存設定失敗', 'error');
+                this.showMessage(chrome.i18n.getMessage('message_settings_saved_error'), 'error');
             }
         });
         this.settingsUI.remember_generated_random_password_into_history.addEventListener('change', (e) => {
@@ -202,7 +202,7 @@ class OptionsManager {
             };
             this.updateSettingsForm();
         } catch (error) {
-            console.error('載入設定時發生錯誤:', error);
+            console.error('loading settings fail:', error);
         }
     }
 
@@ -222,7 +222,7 @@ class OptionsManager {
             }
             this.updateHistoryTable();
         } catch (error) {
-            console.error('載入歷史記錄時發生錯誤:', error);
+            console.error('loading history fail:', error);
         }
     }
 
@@ -253,10 +253,10 @@ class OptionsManager {
     async copyPw(pw) {
         try {
             await navigator.clipboard.writeText(pw);
-            this.showMessage('已複製密碼');
+            this.showMessage(chrome.i18n.getMessage('message_copied_to_clipboard'));
         } catch (err) {
-            console.error('複製失敗:', err);
-            this.showMessage('複製密碼失敗', 'error');
+            console.error('copy fail:', err);
+            this.showMessage(chrome.i18n.getMessage('message_copied_to_clipboard_fail'), 'error');
         }
     }
 
@@ -268,21 +268,33 @@ class OptionsManager {
             let item = this.history[i];
             let tr = document.createElement('tr');
             let td1 = document.createElement('td');
-            td1.innerText = '【'+(i+1)+'】'+new Date(item.timestamp).toLocaleString();
+            let div1 = document.createElement('div');
+            div1.classList.add('of');
+            div1.innerText = '【'+(i+1)+'】'+new Date(item.timestamp).toLocaleString();
+            td1.appendChild(div1);
             tr.appendChild(td1);
             let td2 = document.createElement('td');
-            td2.innerText = this.parseParameters(item);
+            let div2 = document.createElement('div');
+            div2.classList.add('of');
+            div2.innerText = this.parseParameters(item);
+            td2.appendChild(div2);
             tr.appendChild(td2);
             let td3 = document.createElement('td');
-            td3.innerText = item.salt;
+            let div3 = document.createElement('div');
+            div3.classList.add('of');
+            div3.innerText = item.salt;
+            td3.appendChild(div3);
             tr.appendChild(td3);
             let td4 = document.createElement('td');
-            td4.innerText = item.pw;
+            let div4 = document.createElement('div');
+            div4.classList.add('of');
+            div4.innerText = item.pw;
+            td4.appendChild(div4);
             tr.appendChild(td4);
             let td5 = document.createElement('td');
             let copyBtn = document.createElement('button');
             copyBtn.classList.add('btn', 'btn-primary');
-            copyBtn.innerText = '複製';
+            copyBtn.innerText = chrome.i18n.getMessage('button_copy');
             copyBtn.addEventListener('click', () => {
                 this.copyPw(item.pw);
             });
@@ -290,7 +302,7 @@ class OptionsManager {
             td5.appendChild(document.createTextNode(' '));
             let clearBtn = document.createElement('button');
             clearBtn.classList.add('btn', 'btn-primary');
-            clearBtn.innerText = '清除';
+            clearBtn.innerText = chrome.i18n.getMessage('button_delete');
             clearBtn.addEventListener('click', () => {
                 SMW.delete_history(i, item.timestamp);
                 this.refreshHistory();
@@ -304,7 +316,7 @@ class OptionsManager {
 
     refreshHistory() {
         this.loadHistory();
-        this.showMessage('歷史記錄已更新');
+        this.showMessage(chrome.i18n.getMessage('message_history_updated'));
     }
 
     showMessage(message, type = 'success') {

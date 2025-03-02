@@ -85,7 +85,6 @@ class PopupManager {
                     }
                 );
             } catch (error) {
-                // 捕獲可能的同步錯誤
                 reject(error);
             }
         });
