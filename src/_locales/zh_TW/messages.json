@@ -1,6 +1,6 @@
 {
     "app_title": {
-        "message": "密碼生成器 for Chrome",
+        "message": "密碼生成器",
         "description": "Name of the extension"
     },
     "options_number_checkbox": {
@@ -38,6 +38,22 @@
     "version_label": {
         "message": "版本",
         "description": "Label of Version"
+    },
+    "salt_auto_fill_options1": {
+        "message": "什麼都不做",
+        "description": "Label of AutoFill Option"
+    },
+    "salt_auto_fill_options2": {
+        "message": "自動填入網域",
+        "description": "Label of AutoFill Option"
+    },
+    "salt_auto_fill_options3": {
+        "message": "自動填入網址",
+        "description": "Label of AutoFill Option"
+    },
+    "salt_auto_fill_options4": {
+        "message": "自動填入關鍵字",
+        "description": "Label of AutoFill Option"
     },
     "button_copy": {
         "message": "複製",

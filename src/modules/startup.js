@@ -61,6 +61,9 @@ export class UIStartUp {
         document.querySelectorAll('[local-value]').forEach(elem => {
             elem.value = chrome.i18n.getMessage(elem.getAttribute("local-value"));
         });
+        document.querySelectorAll('[data-lang]').forEach(elem => {
+            elem.innerText = chrome.i18n.getMessage(elem.getAttribute("data-lang"))
+        });
         await this.checkBackgroundStatus();
     }
 
