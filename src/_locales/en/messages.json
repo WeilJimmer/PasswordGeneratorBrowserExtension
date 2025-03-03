@@ -67,6 +67,10 @@
         "message": "Generate",
         "description": "Button of Generate"
     },
+    "button_options": {
+        "message": "Settings",
+        "description": "Button of Options"
+    },
     "button_delete": {
         "message": "Delete",
         "description": "Button of Delete"

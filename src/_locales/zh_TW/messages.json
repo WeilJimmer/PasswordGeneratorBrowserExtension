@@ -67,6 +67,10 @@
         "message": "生成",
         "description": "Button of Generate"
     },
+    "button_options": {
+        "message": "設定",
+        "description": "Button of Options"
+    },
     "button_delete": {
         "message": "清除",
         "description": "Button of Delete"

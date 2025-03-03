@@ -49,6 +49,7 @@ class PopupManager {
             uppercaseCheckbox: document.getElementById('uppercase'),
             lowercaseCheckbox: document.getElementById('lowercase'),
             checksumField: document.getElementById('checksum_span'),
+            settingsBtn: document.getElementById('settingsBtn'),
             generateBtn: document.getElementById('generateBtn'),
             lengthValue: document.getElementById('lengthValue'),
             numbersCheckbox: document.getElementById('numbers'),
@@ -167,8 +168,10 @@ class PopupManager {
 
     async readUIState(){
         freeze_generate_password_event = true;
-        this.need_hide_password = await SMW.get_settings('hide_generated_pw', false);
+        // read settings
         this.need_search_history_salt = await SMW.get_settings('auto_search_history', true);
+        this.need_hide_password = await SMW.get_settings('hide_generated_pw', false);
+        // read states
         this.elements.lowercaseCheckbox.checked = await SMW.get_state('lowercaseChecked', true);
         this.elements.uppercaseCheckbox.checked = await SMW.get_state('uppercaseChecked', true);
         this.elements.numbersCheckbox.checked = await SMW.get_state('numbersChecked', true);
@@ -180,6 +183,7 @@ class PopupManager {
         this.elements.symbolsCharField.value = await SMW.get_state('symbols');
         this.elements.masterPasswordField.value = await SMW.get_state('pw');
         this.elements.saltField.value = await SMW.get_state('salt');
+        // set UI elements
         if (this.need_hide_password) {
             this.elements.hidePasswordField.style.display = 'block';
             this.elements.passwordField.style.display = 'none';
@@ -267,6 +271,9 @@ class PopupManager {
             await this.setAutofillOptions();
             SMW.set_state('salt', this.elements.saltField.value);
             await send_generate_password();
+        });
+        this.elements.settingsBtn.addEventListener('click', () => {
+            chrome.runtime.openOptionsPage();
         });
         this.elements.generateBtn.addEventListener('click', async () => {
             this.setAllUiState();
