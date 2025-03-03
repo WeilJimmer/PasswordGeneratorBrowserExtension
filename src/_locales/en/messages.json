@@ -3,6 +3,10 @@
         "message": "Password Generator",
         "description": "Name of the extension"
     },
+    "app_description": {
+        "message": "Free, ad-free, open-source simple password generator.",
+        "description": "Description of the extension"
+    },
     "options_number_checkbox": {
         "message": "Number[0-9]",
         "description": "Options of Number[0-9]"
@@ -63,6 +67,22 @@
         "message": "Generate",
         "description": "Button of Generate"
     },
+    "button_delete": {
+        "message": "Delete",
+        "description": "Button of Delete"
+    },
+    "button_save": {
+        "message": "Save",
+        "description": "Button of Save"
+    },
+    "button_refresh": {
+        "message": "Refresh",
+        "description": "Button of Refresh"
+    },
+    "button_clear_all": {
+        "message": "Clear All",
+        "description": "Button of ClearAll"
+    },
     "button_generate_copy": {
         "message": "Generate&Copy",
         "description": "Button of Generate&Copy"
@@ -70,10 +90,6 @@
     "button_reset": {
         "message": "Reset",
         "description": "Button of Reset"
-    },
-    "button_delete": {
-        "message": "Delete",
-        "description": "Button of Delete"
     },
     "region_generated_password_label": {
         "message": "(Generated Password)",
@@ -86,7 +102,8 @@
     "message_copied_to_clipboard_fail": {
         "message": "Failed to copy to clipboard!",
         "description": "Message of Copied to clipboard"
-    },"title_options": {
+    },
+    "title_options": {
         "message": "Extension Settings",
         "description": "Title of Options page"
     },

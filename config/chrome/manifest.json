@@ -1,8 +1,8 @@
 {
   "name": "__MSG_app_title__",
   "author": "me@weils.net",
-  "version": "1.1.0",
-  "description": "Free, ad-free, open-source simple password generator.",
+  "version": "1.1.1",
+  "description": "__MSG_app_description__",
   "homepage_url": "https://github.com/WeilJimmer/PasswordGeneratorBrowserExtension",
   "default_locale": "en",
   "manifest_version": 3,

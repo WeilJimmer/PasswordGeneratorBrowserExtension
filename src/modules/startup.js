@@ -50,7 +50,9 @@ export class UIStartUp {
         this._initialized = true;
         // translate all elements with lang attribute
         document.querySelectorAll('data-lang').forEach(elem => {
-            elem.outerHTML = chrome.i18n.getMessage(elem.innerText);
+            const code = elem.innerText;
+            elem.setAttribute('data-lang', code);
+            elem.innerText = chrome.i18n.getMessage(code);
         });
         document.querySelectorAll('[local-placeholder]').forEach(elem => {
             elem.placeholder = chrome.i18n.getMessage(elem.getAttribute("local-placeholder"));

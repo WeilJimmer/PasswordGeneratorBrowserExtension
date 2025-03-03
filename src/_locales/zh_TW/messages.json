@@ -3,6 +3,10 @@
         "message": "密碼生成器",
         "description": "Name of the extension"
     },
+    "app_description": {
+        "message": "免費、無廣告、開源的簡單密碼生成器，適用於網頁瀏覽器。",
+        "description": "Description of the extension"
+    },
     "options_number_checkbox": {
         "message": "數字[0-9]",
         "description": "Options of Number[0-9]"
@@ -70,6 +74,14 @@
     "button_save": {
         "message": "儲存",
         "description": "Button of Save"
+    },
+    "button_refresh": {
+        "message": "重新整理",
+        "description": "Button of Refresh"
+    },
+    "button_clear_all": {
+        "message": "清空全部",
+        "description": "Button of ClearAll"
     },
     "button_generate_copy": {
         "message": "生成&複製",

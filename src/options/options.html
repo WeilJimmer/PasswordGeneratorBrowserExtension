@@ -4,7 +4,7 @@
 <head>
   <meta http-equiv="content-type" content="text/html; charset=utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title data-lang="title_options">擴展設定</title>
+  <title data-lang="title_options">Extension Settings</title>
   <style>
     body {
       margin: 0;
@@ -185,11 +185,11 @@
         font-weight: bold;
       }
 
-      .history-table td:nth-of-type(1):before { content: "時間"; }
-      .history-table td:nth-of-type(2):before { content: "參數"; }
-      .history-table td:nth-of-type(3):before { content: "鹽"; }
-      .history-table td:nth-of-type(4):before { content: "密碼"; }
-      .history-table td:nth-of-type(5):before { content: "動作"; }
+      .history-table td:nth-of-type(1):before { content: "Time"; }
+      .history-table td:nth-of-type(2):before { content: "Parameter"; }
+      .history-table td:nth-of-type(3):before { content: "Salt"; }
+      .history-table td:nth-of-type(4):before { content: "Password"; }
+      .history-table td:nth-of-type(5):before { content: "Action"; }
     }
   </style>
 </head>
@@ -210,14 +210,14 @@
           <path d="M12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z"/>
           <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1Z"/>
         </svg>
-        設定
+        <span data-lang="nav_tab_settings">Settings</span>
       </div>
       <div class="nav-item" data-tab="history">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
           <path d="M12 8v4l3 3"/>
           <circle cx="12" cy="12" r="10"/>
         </svg>
-        歷史記錄
+        <span data-lang="nav_tab_history">History</span>
       </div>
       <div class="nav-item" data-tab="about">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -225,7 +225,7 @@
           <circle cx="12" cy="8" r="1"/>
           <path d="M12 17v-5"/>
         </svg>
-        關於
+        <span data-lang="nav_tab_about">About</span>
       </div>
     </div>
 
@@ -233,86 +233,86 @@
     <div class="main-content">
       <!-- settings -->
       <div id="settings" class="tab-content active">
-        <h2>設定</h2>
+        <h2 data-lang="nav_tab_settings">Settings</h2>
         <form id="settingsForm">
           <div class="form-group">
             <input type="checkbox" id="remember_generated_parameter_into_history" checked="checked">
-            <label for="remember_generated_parameter_into_history">啟動參數歷史紀錄</label>
-            <small>打勾這個選項後，所有按下「生成」按鈕的參數都會被紀錄到歷史紀錄。</small>
+            <label for="remember_generated_parameter_into_history" data-lang="settings_options_parameter_history">Enable parameter history</label>
+            <small data-lang="settings_options_parameter_history_description">When checked, all parameters used with the 'Generate' button will be recorded in history.</small>
           </div>
           <hr>
           <div class="form-group">
             <input type="checkbox" id="remember_generated_random_password_into_history" checked="checked">
-            <label for="remember_generated_random_password_into_history">儲存生成的隨機密碼到歷史紀錄</label>
-            <small>打勾這個選項後，所有生成的隨機密碼都會被紀錄到歷史紀錄。</small>
+            <label for="remember_generated_random_password_into_history" data-lang="settings_options_save_randompw_history">Save generated random passwords to history</label>
+            <small data-lang="settings_options_save_randompw_history_description">When checked, all generated random passwords will be saved to history.</small>
           </div>
           <hr>
           <div class="form-group">
             <input type="checkbox" id="remember_generated_fixed_password_into_history">
-            <label for="remember_generated_fixed_password_into_history">儲存生成的固定密碼到歷史紀錄</label>
-            <small>打勾這個選項後，所有生成的固定密碼都會被紀錄到歷史紀錄。</small>
+            <label for="remember_generated_fixed_password_into_history" data-lang="settings_options_save_fixedpw_history">Save generated fixed passwords to history</label>
+            <small data-lang="settings_options_save_fixedpw_history_description">When checked, all generated fixed passwords will be saved to history.</small>
           </div>
           <hr>
           <div class="form-group">
             <input type="checkbox" id="auto_search_history" checked="checked">
-            <label for="auto_search_history">自動搜尋匹配的歷史紀錄並載入參數</label>
-            <small>打勾這個選項後，當輸入參數時會自動搜尋歷史紀錄中匹配相同的鹽值的紀錄，載入其參數。</small>
+            <label for="auto_search_history" data-lang="settings_options_search_matched_history">Automatically search matching history and load parameters</label>
+            <small data-lang="settings_options_search_matched_history_description">When checked, the system will automatically search history for matching salt values and load the corresponding parameters.</small>
           </div>
           <hr>
           <div class="form-group">
             <input type="checkbox" id="storge_cloud_sync" checked="checked">
-            <label for="storge_cloud_sync">同步設定和歷史紀錄到瀏覽器提供者的雲端</label>
-            <small>打勾這個選項後，所有設定和歷史紀錄都會被同步到瀏覽器提供者的雲端，以便在不同裝置上使用相同的設定和歷史紀錄。</small>
+            <label for="storge_cloud_sync" data-lang="settings_options_sync_to_cloud">Sync settings and history to browser cloud</label>
+            <small data-lang="settings_options_sync_to_cloud_description">When checked, all settings and history will be synchronized to your browser's cloud, allowing you to use the same configuration across different devices.</small>
           </div>
           <hr>
           <div class="form-group">
             <input type="checkbox" id="remember_last_parameters">
-            <label for="remember_last_parameters">記住最後所用的參數</label>
-            <small>打勾這個選項後，當重新開啟擴展時會自動載入最後所用的參數。</small>
+            <label for="remember_last_parameters" data-lang="settings_options_remember_last_parameter">Remember last used parameters</label>
+            <small data-lang="settings_options_remember_last_parameter_description">When checked, the extension will automatically load the last used parameters when reopened.</small>
           </div>
           <hr>
           <div class="form-group">
             <input type="checkbox" id="remember_master_password">
-            <label for="remember_master_password">記住主密碼 (危險)</label>
-            <small>打勾這個選項後，主密碼會被儲存在擴展套件中，其他人有可能會因此竊取您的密碼。</small>
+            <label for="remember_master_password" data-lang="settings_options_remember_master_password">Remember master password (dangerous)</label>
+            <small data-lang="settings_options_remember_master_password_description">When checked, the master password will be stored in the extension, which could potentially allow others to access your passwords.</small>
           </div>
           <hr>
           <div class="form-group">
             <input type="checkbox" id="hide_generated_pw">
-            <label for="hide_generated_pw">隱藏生成的密碼</label>
-            <small>打勾這個選項後，生成的密碼將會被隱藏，並且需要點擊「顯示」按鈕才能看到。</small>
+            <label for="hide_generated_pw" data-lang="settings_options_hide_generated_password">Hide generated password</label>
+            <small data-lang="settings_options_hide_generated_password_description">When checked, generated passwords will be hidden by default and will require clicking a 'Show' button to view.</small>
           </div>
           <hr>
           <div class="form-group">
-            <label for="forgot_password">自動忘記主密碼 (秒)</label>
-            <small>過一段時間後，自動遺忘主密碼，設定為 0 將不會自動忘記主密碼。</small><br>
+            <label for="forgot_password" data-lang="settings_options_forgot_password_expire_times">Auto-forget master password (seconds)</label>
+            <small data-lang="settings_options_forgot_password_expire_times_description">After the specified time period, the master password will be automatically forgotten. Setting to 0 will disable this feature.</small><br>
             <input type="number" class="form-control" id="forgot_password" min="0" max="60" value="20">
           </div>
           <hr>
           <div class="form-group">
-            <label for="max_history">上限紀錄筆數</label>
-            <small>設定歷史紀錄的上限筆數，超過上限的紀錄將會被刪除。</small><br>
+            <label for="max_history" data-lang="settings_options_max_history">Maximum history records</label>
+            <small data-lang="settings_options_max_history_description">Sets the maximum number of history records to keep. Older records will be deleted when this limit is reached.</small><br>
             <input type="number" class="form-control" id="max_history" min="1" max="100" value="100">
           </div>
-          <button type="submit" class="btn btn-primary" id="save_settings">儲存設定</button>
+          <button type="submit" class="btn btn-primary" id="save_settings" data-lang="button_save">Save</button>
         </form>
       </div>
 
       <!-- history -->
       <div id="history" class="tab-content">
-        <h2>歷史記錄</h2>
+        <h2 data-lang="nav_tab_history">History</h2>
         <div style="position:absolute;right: 0;top: 0;">
-          <button class="btn btn-primary" id="refreshHistoryBtn" >刷新</button>
-          <button class="btn btn-primary" id="clearHistoryBtn" >清除全部</button>
+          <button class="btn btn-primary" id="refreshHistoryBtn" data-lang="button_refresh">Refresh</button>
+          <button class="btn btn-primary" id="clearHistoryBtn" data-lang="button_clear_all">Clear All</button>
         </div>
         <table class="history-table">
           <thead>
             <tr>
-              <th>時間</th>
-              <th>參數</th>
-              <th>鹽</th>
-              <th>密碼</th>
-              <th>動作</th>
+              <th data-lang="message_th_time">Time</th>
+              <th data-lang="message_th_parameter">Parameter</th>
+              <th data-lang="message_th_salt">Salt</th>
+              <th data-lang="message_th_pw">Password</th>
+              <th data-lang="message_th_action">Action</th>
             </tr>
           </thead>
           <tbody id="historyTableBody">
@@ -322,11 +322,11 @@
 
       <!-- about -->
       <div id="about" class="tab-content">
-        <h2>關於</h2>
-        <p>版本: <span id="versionSpan">1.0</span></p>
-        <p>作者: Weil Jimmer</p>
-        <p>網站: <a href="https://weils.net/" target="_blank">https://weils.net/</a><br>　　 &nbsp;<a href="https://wbftw.org/" target="_blank">https://wbftw.org/</a></p>
-        <p>原始碼: <a id="sourceCodeLink" href="https://github.com/WeilJimmer/PasswordGeneratorBrowserExtension" target="_blank">(github) https://github.com/WeilJimmer/PasswordGeneratorBrowserExtension</a>
+        <h2 data-lang="nav_tab_about">About</h2>
+        <p><span data-lang="message_version">Version</span>: <span id="versionSpan">1.0</span></p>
+        <p><span data-lang="message_author">Author</span>: Weil Jimmer</p>
+        <p><span data-lang="message_website">Webstie</span>: <a href="https://weils.net/" target="_blank">https://weils.net/</a><br>　　 &nbsp;<a href="https://wbftw.org/" target="_blank">https://wbftw.org/</a></p>
+        <p><span data-lang="message_source">Source</span>: <a id="sourceCodeLink" href="https://github.com/WeilJimmer/PasswordGeneratorBrowserExtension" target="_blank">(github) https://github.com/WeilJimmer/PasswordGeneratorBrowserExtension</a>
         <p><span id="descriptSpan">(description) Free, ad-free, open-source simple password generator.</span></p>
       </div>
     </div>
