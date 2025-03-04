@@ -1,6 +1,14 @@
 # Password Generator Browser Extension
 
+![GitHub License](https://img.shields.io/github/license/WeilJimmer/PasswordGeneratorBrowserExtension)
+![GitHub Release](https://img.shields.io/github/v/release/WeilJimmer/PasswordGeneratorBrowserExtension)
+![Mozilla Add-on Version](https://img.shields.io/amo/v/wbft-password-generator?color=FD513C)
+
 Free, ad-free, open-source simple password generator for browser.
+
+## Downloads
+
+[Github](https://github.com/WeilJimmer/PasswordGeneratorBrowserExtension/releases) | [Mozilla Add-ons](https://addons.mozilla.org/zh-TW/firefox/addon/wbft-password-generator/)
 
 ## Development Setup
 
