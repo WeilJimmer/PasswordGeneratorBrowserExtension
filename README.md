@@ -10,6 +10,12 @@ Free, ad-free, open-source simple password generator for browser.
 
 [Github](https://github.com/WeilJimmer/PasswordGeneratorBrowserExtension/releases) | [Mozilla Add-ons](https://addons.mozilla.org/zh-TW/firefox/addon/wbft-password-generator/)
 
+## Android
+
+Also, available for Android:
+
+<a href="https://github.com/WeilJimmer/PasswordGeneratorApp/releases"><img src="https://wbreader.weil.app.wbftw.org/images/get-it-on-github.png" alt="Get it on Github" height="80"></a><a href="https://f-droid.org/packages/org.wbftw.weil.passwordgenerator/"><img src="https://wbreader.weil.app.wbftw.org/images/get-it-on-fdroid.png" alt="Get it on Fdroid" height="80"></a>
+
 ## Development Setup
 
 ### Prerequisites
