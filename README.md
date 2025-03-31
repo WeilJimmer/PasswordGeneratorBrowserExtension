@@ -9,13 +9,18 @@ Free, ad-free, open-source simple password generator for browser.
 
 ## Downloads
 
-[Github](https://github.com/WeilJimmer/PasswordGeneratorBrowserExtension/releases) | [Chrome Web Store](https://chromewebstore.google.com/detail/%E5%AF%86%E7%A2%BC%E7%94%9F%E6%88%90%E5%99%A8/nebmcdpmbglgpmapfkejofecgeclcmok) | [Mozilla Add-ons](https://addons.mozilla.org/zh-TW/firefox/addon/wbft-password-generator/)
+[Github](https://github.com/WeilJimmer/PasswordGeneratorBrowserExtension/releases) | 
+[Chrome Web Store](https://chromewebstore.google.com/detail/password-generator/nebmcdpmbglgpmapfkejofecgeclcmok) | 
+[Mozilla Add-ons](https://addons.mozilla.org/zh-TW/firefox/addon/wbft-password-generator/) | 
+[Edge Add-ons](https://microsoftedge.microsoft.com/addons/detail/njgpfdkllkoidcndpopeggheljpgkefg)
 
 ## Android
 
 Also, available for Android:
 
-<a href="https://github.com/WeilJimmer/PasswordGeneratorApp/releases"><img src="https://wbreader.weil.app.wbftw.org/images/get-it-on-github.png" alt="Get it on Github" height="80"></a><a href="https://f-droid.org/packages/org.wbftw.weil.passwordgenerator/"><img src="https://wbreader.weil.app.wbftw.org/images/get-it-on-fdroid.png" alt="Get it on Fdroid" height="80"></a>
+<a href="https://play.google.com/store/apps/details?id=org.wbftw.weil.passwordgenerator"><img src="https://wbreader.weil.app.wbftw.org/images/get-it-on-google-play.png" alt="Get it on Google Play" height="80"></a>
+<a href="https://github.com/WeilJimmer/PasswordGeneratorApp/releases"><img src="https://wbreader.weil.app.wbftw.org/images/get-it-on-github.png" alt="Get it on Github" height="80"></a>
+<a href="https://f-droid.org/packages/org.wbftw.weil.passwordgenerator/"><img src="https://wbreader.weil.app.wbftw.org/images/get-it-on-fdroid.png" alt="Get it on Fdroid" height="80"></a>
 
 ## Development Setup
 
