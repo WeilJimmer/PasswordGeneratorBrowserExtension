@@ -6,9 +6,45 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title data-lang="title_options">Extension Settings</title>
   <style>
+    :root {
+      /* 淺色主題變數 */
+      --background-color: #ffffff;
+      --text-color: #495057;
+      --border-color: #dee2e6;
+      --nav-background: #f8f9fa;
+      --card-background: #ffffff;
+      --header-color: #212529;
+      --button-primary: #228be6;
+      --button-hover: #1c7ed6;
+      --table-header: #f8f9fa;
+      --hover-background: #e9ecef;
+      --active-color: #228be6;
+      --loading-background: rgba(255, 255, 255, 0.8);
+      --small-text: #6c757d;
+    }
+
+    /* 深色主題變數 */
+    .dark-theme {
+      --background-color: #1a1a1a;
+      --text-color: #e9ecef;
+      --border-color: #444444;
+      --nav-background: #2c2c2c;
+      --card-background: #2c2c2c;
+      --header-color: #f8f9fa;
+      --button-primary: #339af0;
+      --button-hover: #4dabf7;
+      --table-header: #343a40;
+      --hover-background: #343a40;
+      --active-color: #4dabf7;
+      --loading-background: rgba(0, 0, 0, 0.7);
+      --small-text: #adb5bd;
+    }
+
     body {
       margin: 0;
       font-family: system-ui, -apple-system, sans-serif;
+      background-color: var(--background-color);
+      color: var(--text-color);
     }
 
     .container {
@@ -21,14 +57,14 @@
       left: 0;
       width: 100%;
       height: 100%;
-      background: rgba(255, 255, 255, 0.8);
+      background: var(--loading-background);
       text-align: center;
       z-index: 9999;
     }
 
     .top-nav {
-      background: #f8f9fa;
-      border-bottom: 1px solid #dee2e6;
+      background: var(--nav-background);
+      border-bottom: 1px solid var(--border-color);
       padding: 0 24px;
       display: flex;
       gap: 8px;
@@ -37,7 +73,7 @@
     .nav-item {
       padding: 8px 4px;
       cursor: pointer;
-      color: #495057;
+      color: var(--text-color);
       display: flex;
       align-items: center;
       gap: 8px;
@@ -45,13 +81,13 @@
     }
 
     .nav-item:hover {
-      background: #e9ecef;
+      background: var(--hover-background);
     }
 
     .nav-item.active {
-      color: #228be6;
+      color: var(--active-color);
       font-weight: 500;
-      border-bottom: 2px solid #228be6;
+      border-bottom: 2px solid var(--active-color);
     }
 
     .main-content {
@@ -80,14 +116,16 @@
     .form-group label {
       display: block;
       margin-bottom: 8px;
-      color: #495057;
+      color: var(--text-color);
     }
 
     .form-control {
       max-width: 300px;
       padding: 8px;
-      border: 1px solid #dee2e6;
+      border: 1px solid var(--border-color);
       border-radius: 4px;
+      background-color: var(--background-color);
+      color: var(--text-color);
     }
 
     .btn {
@@ -98,12 +136,12 @@
     }
 
     .btn-primary {
-      background: #228be6;
+      background: var(--button-primary);
       color: white;
     }
 
     .btn-primary:hover {
-      background: #1c7ed6;
+      background: var(--button-hover);
     }
 
     @keyframes fadeIn {
@@ -121,14 +159,14 @@
     .history-table th,
     .history-table td {
       padding: 12px;
-      border: 1px solid #dee2e6;
+      border: 1px solid var(--border-color);
       text-align: left;
       white-space: nowrap;
       overflow: auto;
     }
 
     .history-table th {
-      background: #f8f9fa;
+      background: var(--table-header);
     }
 
     td {
@@ -137,6 +175,46 @@
 
     .of {
       overflow: auto;
+    }
+
+    small {
+      color: var(--small-text);
+    }
+
+    h2 {
+      color: var(--header-color);
+    }
+
+    hr {
+      border: none;
+      border-top: 1px solid var(--border-color);
+    }
+
+    a {
+      color: var(--active-color);
+      text-decoration: none;
+    }
+
+    a:hover {
+      text-decoration: underline;
+    }
+
+    input[type="checkbox"] {
+      accent-color: var(--active-color);
+    }
+
+    input[type="number"] {
+      background-color: var(--background-color);
+      color: var(--text-color);
+      border: 1px solid var(--border-color);
+    }
+
+    .right-button {
+      border: 0;
+      background: none;
+      cursor: pointer;
+      padding: 4px;
+      z-index: 100;
     }
 
     @media (min-width: 801px) {
@@ -165,12 +243,12 @@
 
       .history-table tr {
         margin-bottom: 15px;
-        border: 1px solid #ccc;
+        border: 1px solid var(--border-color);
       }
 
       .history-table td {
         border: none;
-        border-bottom: 1px solid #eee;
+        border-bottom: 1px solid var(--border-color);
         position: relative;
         padding-left: 40%;
         white-space: normal;
@@ -183,6 +261,7 @@
         width: 35%;
         padding-right: 10px;
         font-weight: bold;
+        color: var(--text-color);
       }
 
       .history-table td:nth-of-type(1):before { content: "Time"; }
@@ -202,11 +281,18 @@
       <span id="block_message">Loading Setting..</span>
     </div>
   </div>
+  <!-- 主題切換按鈕 -->
+  <div style="position: fixed; right: 0; top: 5px; border: 0; background: none">
+    <button class="right-button" id="themeToggle">🌙</button>
+  </div>
   <div class="container">
     <!-- top navigation -->
     <div class="top-nav">
       <div class="nav-item active" data-tab="settings">
-        <img src="../assets/images/settings.svg" alt="settings" width="20" height="20">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" stroke="currentColor" stroke-width="2">
+          <path d="M12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z"/>
+          <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1Z"/>
+        </svg>
         <span data-lang="nav_tab_settings">Settings</span>
       </div>
       <div class="nav-item" data-tab="history">
@@ -329,6 +415,5 @@
     </div>
   </div>
   <script src="options.js" type="module" defer></script>
-  <script src="../modules/heartbeat.js" type="module" defer></script>
 </body>
 </html>

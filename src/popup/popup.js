@@ -3,6 +3,7 @@
 // Description: This file contains the popup manager class that is used to manage the popup window of the extension.
 // The popup manager class is responsible for initializing the popup window and handling messages from the background script.
 
+import '../modules/theme.js';
 import '../modules/heartbeat.js';
 import { SMW } from '../modules/state.js';
 import { UIStartUp } from '../modules/startup.js';

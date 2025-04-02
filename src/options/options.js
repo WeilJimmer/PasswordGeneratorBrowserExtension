@@ -4,6 +4,7 @@
 import toastr from 'toastr';
 import 'toastr/build/toastr.min.css';
 
+import '../modules/theme.js';
 import '../modules/heartbeat.js';
 import { SMW } from '../modules/state.js';
 import { UIStartUp } from '../modules/startup.js';

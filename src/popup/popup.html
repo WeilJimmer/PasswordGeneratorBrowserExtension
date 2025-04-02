@@ -4,12 +4,45 @@
 <head>
   <title>app_title</title>
   <meta http-equiv="content-type" content="text/html; charset=utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
+    :root {
+      /* 淺色主題變數 */
+      --background-color: #ffffff;
+      --text-color: #333333;
+      --secondary-text: #666666;
+      --border-color: #dddddd;
+      --card-background: #f5f5f5;
+      --password-background: #eef2ff;
+      --button-background: #4f46e5;
+      --button-hover: #4338ca;
+      --button-text: white;
+      --success-color: #059669;
+      --loading-background: rgba(255, 255, 255, 0.8);
+    }
+
+    /* 深色主題變數 */
+    .dark-theme {
+      --background-color: #1a1a1a;
+      --text-color: #f0f0f0;
+      --secondary-text: #aaaaaa;
+      --border-color: #444444;
+      --card-background: #2c2c2c;
+      --password-background: #333344;
+      --button-background: #5f56f5;
+      --button-hover: #5348da;
+      --button-text: white;
+      --success-color: #10b981;
+      --loading-background: rgba(0, 0, 0, 0.7);
+    }
+
     body {
       width: 300px;
       margin: 0;
       padding: 0;
       font-family: Arial, sans-serif;
+      background-color: var(--background-color);
+      color: var(--text-color);
     }
     .container {
       display: flex;
@@ -24,7 +57,7 @@
       left: 0;
       width: 100%;
       height: 100%;
-      background: rgba(255, 255, 255, 0.8);
+      background: var(--loading-background);
       text-align: center;
       z-index: 9999;
     }
@@ -34,9 +67,9 @@
     .url-display {
       word-break: break-all;
       font-size: 12px;
-      color: #666;
+      color: var(--secondary-text);
       padding: 8px;
-      background: #f5f5f5;
+      background: var(--card-background);
       border-radius: 4px;
     }
     .password-container {
@@ -52,22 +85,23 @@
       font-family: 'Courier New', Courier, monospace;
       font-size: 14px;
       border: 0;
-      background-color: #eef2ff;
+      background-color: var(--password-background);
+      color: var(--text-color);
     }
     .btn {
       padding: 6px 12px;
-      background: #4f46e5;
-      color: white;
+      background: var(--button-background);
+      color: var(--button-text);
       border: none;
       border-radius: 4px;
       cursor: pointer;
       transition: background 0.2s;
     }
     .btn:hover {
-      background: #4338ca;
+      background: var(--button-hover);
     }
     .success-message {
-      color: #059669;
+      color: var(--success-color);
       font-size: 12px;
       text-align: center;
       opacity: 0;
@@ -79,7 +113,7 @@
     .settings {
       margin-top: 12px;
       padding-top: 12px;
-      border-top: 1px solid #ddd;
+      border-top: 1px solid var(--border-color);
     }
     .settings label {
       display: block;
@@ -90,14 +124,33 @@
       width: 100%;
       padding: 4px;
       margin-bottom: 8px;
+      background-color: var(--background-color);
+      color: var(--text-color);
+      border: 1px solid var(--border-color);
     }
     .style2 {
       vertical-align: middle;
     }
     small {
       font-size: 10px;
-      color: #666;
+      color: var(--secondary-text);
       font-family: 'Courier New', Courier, monospace;
+    }
+    input[type="text"],
+    input[type="password"],
+    input[type="number"],
+    textarea,
+    select {
+      background-color: var(--background-color);
+      color: var(--text-color);
+      border: 1px solid var(--border-color);
+    }
+    .right-button {
+      border: 0;
+      background: none;
+      cursor: pointer;
+      padding: 4px;
+      z-index: 100;
     }
   </style>
 </head>
@@ -111,7 +164,11 @@
     </div>
   </div>
   <img src="../assets/images/feature.png" alt="app_title" style="max-width: 100%; height: 100px; margin:auto; display: block;">
-  <button style="position: fixed; right: 0; top: 0; border: 0; background: none" id="settingsBtn"><img src="../assets/images/settings.svg" alt="settings" width="20" height="20"></button>
+  <!-- 主題切換按鈕 -->
+  <div style="position: fixed; right: 0; top: 0; border: 0; background: none">
+    <button class="right-button" id="themeToggle">🌙</button>
+    <button class="right-button" id="settingsBtn">⚙️</button>
+  </div>
   <div class="container">
     <div>
       <span><input id="lengthValue" value="40" style="width:40px;" type="number" max="100" min="1"></span>
@@ -150,6 +207,5 @@
     <div class="success-message" id="successMessage"><data-lang>message_copied_to_clipboard</data-lang></div>
   </div>
   <script src="popup.js" type="module" defer></script>
-  <script src="../modules/heartbeat.js" type="module" defer></script>
 </body>
 </html>

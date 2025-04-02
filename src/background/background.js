@@ -3,6 +3,7 @@
 // Description: This file is the background script for the Chrome extension. It initializes the StateManager class and listens for messages from the content script.
 // The StateManager class is responsible for managing the state of the extension and handling messages from the content script.
 
+import { PWG } from '../modules/password.js';
 import { HistoryItem } from '../modules/history.js';
 import { StorageManager } from '../modules/storage.js';
 
@@ -166,34 +167,9 @@ class StateManager {
         if (lowercase_checked){ charset += 'abcdefghijklmnopqrstuvwxyz';}
         if (symbols_checked){ charset += symbols_char;}
 
-        const encoder = new TextEncoder();
-        const masterPasswordBytes = encoder.encode(master_password);
+        const result = await PWG.generateSlavePassword(master_password, `${version}:${salt}`, charset, length);
 
-        const passwordData = `${version}:${salt}`;
-        const passwordDataBytes = encoder.encode(passwordData);
-
-        const key = await crypto.subtle.importKey(
-            'raw', masterPasswordBytes, { name: 'HMAC', hash: 'SHA-512' }, false, ['sign']
-        );
-
-        const signature = await crypto.subtle.sign('HMAC', key, passwordDataBytes);
-        let password = Array.from(new Uint8Array(signature)).map(b => ('00000000' + b.toString(2)).slice(-8)).join('');
-
-        const signature2 = await crypto.subtle.sign('HMAC', key, encoder.encode(passwordData + password));
-        let password2 = Array.from(new Uint8Array(signature2)).map(b => ('00000000' + b.toString(2)).slice(-8)).join('');
-
-        const signature_of_master = await crypto.subtle.sign('HMAC', key, masterPasswordBytes);
-        let master_hash_hex = Array.from(new Uint8Array(signature_of_master)).map(b => ('00' + b.toString(16)).slice(-2)).join('').toUpperCase().substring(0, 8);
-
-        let combine_binary_password = password + password2;
-        let finalPassword = '';
-        //7bit
-        let charset_length = charset.length;
-        for(let i = 0; i < length; i++) {
-            let pos = parseInt(combine_binary_password.substring(i * 7, i * 7 + 7), 2) % charset_length;
-            finalPassword += charset.charAt(pos);
-        }
-        this.sendPasswordResult(finalPassword, master_hash_hex, saved, map, mode);
+        this.sendPasswordResult(result[0], result[1], saved, map, mode);
     }
 
     setupMessageHandler() {
