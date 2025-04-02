@@ -9,13 +9,20 @@ Free, ad-free, open-source simple password generator for browser.
 
 ## Downloads
 
-[Github](https://github.com/WeilJimmer/PasswordGeneratorBrowserExtension/releases) | [Chrome Web Store](https://chromewebstore.google.com/detail/%E5%AF%86%E7%A2%BC%E7%94%9F%E6%88%90%E5%99%A8/nebmcdpmbglgpmapfkejofecgeclcmok) | [Mozilla Add-ons](https://addons.mozilla.org/zh-TW/firefox/addon/wbft-password-generator/)
+<a href="https://chromewebstore.google.com/detail/password-generator/nebmcdpmbglgpmapfkejofecgeclcmok"><img src="https://pgbe.weil.app.wbftw.org/chrome.png" alt="Get it on Chrome" height="60"></a>
+<a href="https://addons.mozilla.org/zh-TW/firefox/addon/wbft-password-generator/"><img src="https://pgbe.weil.app.wbftw.org/firefox.png" alt="Get it on Firefox" height="60"></a>
+<a href="https://microsoftedge.microsoft.com/addons/detail/njgpfdkllkoidcndpopeggheljpgkefg"><img src="https://pgbe.weil.app.wbftw.org/edge.png" alt="Get it on Edge" height="60"></a>
+<a href="https://addons.opera.com/zh-tw/extensions/details/password-generator-8/"><img src="https://pgbe.weil.app.wbftw.org/opera.png" alt="Get it on Opera" height="60"></a>
+
+or [Github Releases](https://github.com/WeilJimmer/PasswordGeneratorBrowserExtension/releases)
 
 ## Android
 
 Also, available for Android:
 
-<a href="https://github.com/WeilJimmer/PasswordGeneratorApp/releases"><img src="https://wbreader.weil.app.wbftw.org/images/get-it-on-github.png" alt="Get it on Github" height="80"></a><a href="https://f-droid.org/packages/org.wbftw.weil.passwordgenerator/"><img src="https://wbreader.weil.app.wbftw.org/images/get-it-on-fdroid.png" alt="Get it on Fdroid" height="80"></a>
+<a href="https://play.google.com/store/apps/details?id=org.wbftw.weil.passwordgenerator"><img src="https://wbreader.weil.app.wbftw.org/images/get-it-on-google-play.png" alt="Get it on Google Play" height="80"></a>
+<a href="https://github.com/WeilJimmer/PasswordGeneratorApp/releases"><img src="https://wbreader.weil.app.wbftw.org/images/get-it-on-github.png" alt="Get it on Github" height="80"></a>
+<a href="https://f-droid.org/packages/org.wbftw.weil.passwordgenerator/"><img src="https://wbreader.weil.app.wbftw.org/images/get-it-on-fdroid.png" alt="Get it on Fdroid" height="80"></a>
 
 ## Development Setup
 
