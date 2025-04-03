@@ -9,9 +9,9 @@ Free, ad-free, open-source simple password generator for browser.
 
 ## Downloads
 
-<a href="https://chromewebstore.google.com/detail/password-generator/nebmcdpmbglgpmapfkejofecgeclcmok"><img src="https://pgbe.weil.app.wbftw.org/chrome.png" alt="Get it on Chrome" height="60"></a>
-<a href="https://addons.mozilla.org/zh-TW/firefox/addon/wbft-password-generator/"><img src="https://pgbe.weil.app.wbftw.org/firefox.png" alt="Get it on Firefox" height="60"></a>
 <a href="https://microsoftedge.microsoft.com/addons/detail/njgpfdkllkoidcndpopeggheljpgkefg"><img src="https://pgbe.weil.app.wbftw.org/edge.png" alt="Get it on Edge" height="60"></a>
+<a href="https://addons.mozilla.org/zh-TW/firefox/addon/wbft-password-generator/"><img src="https://pgbe.weil.app.wbftw.org/firefox.png" alt="Get it on Firefox" height="60"></a>
+<a href="https://chromewebstore.google.com/detail/password-generator/nebmcdpmbglgpmapfkejofecgeclcmok"><img src="https://pgbe.weil.app.wbftw.org/chrome.png" alt="Get it on Chrome" height="60"></a>
 <a href="https://addons.opera.com/zh-tw/extensions/details/password-generator-8/"><img src="https://pgbe.weil.app.wbftw.org/opera.png" alt="Get it on Opera" height="60"></a>
 
 or [Github Releases](https://github.com/WeilJimmer/PasswordGeneratorBrowserExtension/releases)
