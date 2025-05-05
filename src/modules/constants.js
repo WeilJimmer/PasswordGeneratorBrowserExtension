@@ -32,7 +32,7 @@ export const DEFAULT_CONST = {
     SYMBOLS_CHECKED : true,
     MASTER_PASSWORD : '',
     AUTOFILL_OPTION : AUTOFILL_OPTIONS.DO_NOTHING,
-    SYMBOLS_CHAR : '!@#$%^&*(){}[]:,.',
+    SYMBOLS_CHAR : '!@#$%^&*(){}[]=,.',
     VERSION : 1,
     LENGTH : 40,
     SALT : ''

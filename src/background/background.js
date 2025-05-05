@@ -6,6 +6,7 @@
 import { PWG } from '../modules/password.js';
 import { HistoryItem } from '../modules/history.js';
 import { StorageManager } from '../modules/storage.js';
+import { success } from 'toastr';
 
 var stateManager = null;
 
@@ -172,6 +173,14 @@ class StateManager {
         this.sendPasswordResult(result[0], result[1], saved, map, mode);
     }
 
+    async importStorage(data){
+        const isSuccess = await this.storageManager.setDumpStorageData(data);
+        chrome.runtime.sendMessage({
+            type: 'STORAGE_IMPORT_RESULT',
+            success: isSuccess
+        });
+    }
+
     setupMessageHandler() {
         chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
             try {
@@ -253,6 +262,23 @@ class StateManager {
                             this.generateSlavePassword(this.ui_state, this.getSettings("remember_generated_fixed_password_into_history", false), trigger);
                         }
                         sendResponse({ success: true, status: 'processing' });
+                        break;
+                    case 'GET_DUMP_STORAGE_DATA':
+                        if (this.storageManager!=null){
+                            sendResponse({ success: true, data: this.storageManager.dumpAllStorage() });
+                        }else{
+                            console.error('StorageManager is not initialized.');
+                            sendResponse({ success: false, data: "{}" });
+                        }
+                        break;
+                    case 'SET_DUMP_STORAGE_DATA':
+                        if (this.storageManager!=null){
+                            this.importStorage(message.data);
+                            sendResponse({ success: true });
+                        }else{
+                            console.error('StorageManager is not initialized.');
+                            sendResponse({ success: false });
+                        }
                         break;
                     default:
                         sendResponse({ success: false, error: 'Invalid message type' });

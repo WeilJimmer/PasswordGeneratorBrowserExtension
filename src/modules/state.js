@@ -62,6 +62,19 @@ export class StateManagerClient {
             key: _salt
         });
     }
+    static async getDumpStorageData() {
+        const response = await chrome.runtime.sendMessage({
+            type: 'GET_DUMP_STORAGE_DATA'
+        });
+        return response.data;
+    }
+    static async setDumpStorageData(_value) {
+        const response = await chrome.runtime.sendMessage({
+            type: 'SET_DUMP_STORAGE_DATA',
+            data: _value
+        });
+        return response.success;
+    }
 }
 
 export class SMW {
@@ -98,5 +111,11 @@ export class SMW {
     }
     static async search_history(_salt) {
         return await StateManagerClient.searchHistory(_salt);
+    }
+    static async get_dump_storage_data() {
+        return await StateManagerClient.getDumpStorageData();
+    }
+    static async set_dump_storage_data(_value) {
+        return await StateManagerClient.setDumpStorageData(_value);
     }
 }

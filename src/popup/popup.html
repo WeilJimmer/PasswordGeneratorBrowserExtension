@@ -136,7 +136,9 @@
       color: var(--secondary-text);
       font-family: 'Courier New', Courier, monospace;
     }
+    input,
     input[type="text"],
+    input[type="range"],
     input[type="password"],
     input[type="number"],
     textarea,
@@ -179,7 +181,7 @@
       <div class="inline-block"><input class="style2" type="checkbox" id="lowercase" name="lowercase" checked="checked"><label for="lowercase"><data-lang>options_lowercase_checkbox</data-lang></label></div>
       <div class="inline-block"><input class="style2" type="checkbox" id="symbols" name="symbols" checked="checked"><label for="symbols"><data-lang>options_symbols_checkbox</data-lang></label></div>
     </div>
-    <div><input type="text" class="style2" id="symbols_char" style="width:250px" value="!@#$%^&*(){}[]=,." maxlength="66"></div>
+    <div><input type="text" class="style2" id="symbols_char" style="width:250px" value="!@#$%^&*(){}[]=,." maxlength="100"></div>
     <div class="settings">
       <label for="master_password"><data-lang>master_password_label</data-lang>: <small id="checksum_span"></small></label>
       <input type="password" id="master_password" local-placeholder="master_password_placeholder" placeholder="master_password_placeholder" autocomplete="off" style="width: 250px;">

@@ -11,7 +11,7 @@ describe('PWG', () => {
     const number_table = '0123456789';
     const lower_case = 'abcdefghijklmnopqrstuvwxyz';
     const upper_case = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
-    const symbols = '!@#$%^&*(){}[]:,.';
+    const symbols = '!@#$%^&*(){}[]=,.';
     const default_table = number_table + upper_case + lower_case + symbols;
 
     test('should initialize correctly', () => {
@@ -28,7 +28,7 @@ describe('PWG', () => {
         expect(master_hash_hex).toBeDefined();
 
         expect(password.length).toBe(length);
-        expect(password).toBe('o2:2O$TnER7O{60EG)T0TZwR}d.LkMsP2c0I2hO9');
+        expect(password).toBe('o2=2O$TnER7O{60EG)T0TZwR}d.LkMsP2c0I2hO9');
         expect(master_hash_hex).toBe('4899F48B');
     });
 

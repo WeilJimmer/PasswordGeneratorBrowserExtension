@@ -1,6 +1,6 @@
 {
   "name": "passwordgeneratorbrowserextension",
-  "version": "1.2.0",
+  "version": "1.3.0",
   "description": "Free, ad-free, open-source simple password generator for browser.",
   "main": "jest.config.js",
   "directories": {

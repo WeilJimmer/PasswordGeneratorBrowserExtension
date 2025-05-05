@@ -49,6 +49,14 @@ class OptionsManager {
             historyTableBody: document.getElementById('historyTableBody'),
             clearHistoryBtn: document.getElementById('clearHistoryBtn'),
         };
+        this.exportUI = {
+            exportBtn: document.getElementById('exportBtn'),
+            importBtn: document.getElementById('importBtn'),
+            copyBtn: document.getElementById('copyBtn'),
+            clearAllBtn: document.getElementById('clearAllBtn'),
+            importFileInput: document.getElementById('importFileInput'),
+            importTextArea: document.getElementById('importTextArea'),
+        }
     }
 
     async init() {
@@ -57,6 +65,7 @@ class OptionsManager {
         }
         this._initialized = true;
         this.initAboutUI();
+        this.initExportUI();
         this.initHistoryUI();
         this.initSettingsUI();
         this.setupEventListeners();
@@ -71,6 +80,23 @@ class OptionsManager {
         this.elements.descriptSpan.innerText = description;
         this.elements.sourceCodeLink.innerText = sourceCodeURL;
         this.elements.sourceCodeLink.href = sourceCodeURL;
+    }
+
+    async initExportUI() {
+        console.log('initExportUI');
+        this.exportUI.exportBtn.addEventListener('click', async () => {
+            this.exportUI.importTextArea.value = await SMW.get_dump_storage_data();
+        });
+        this.exportUI.importBtn.addEventListener('click', async () => {
+            SMW.set_dump_storage_data(this.exportUI.importTextArea.value);
+        });
+        this.exportUI.copyBtn.addEventListener('click', async () => {
+            await navigator.clipboard.writeText(this.exportUI.importTextArea.value);
+            this.showMessage(chrome.i18n.getMessage('message_copied_to_clipboard'));
+        });
+        this.exportUI.clearAllBtn.addEventListener('click', async () => {
+            this.exportUI.importTextArea.value = '';
+        });
     }
 
     async initSettingsUI() {
@@ -114,6 +140,15 @@ class OptionsManager {
                 this.showMessage(chrome.i18n.getMessage('message_settings_saved'));
             }else{
                 this.showMessage(chrome.i18n.getMessage('message_settings_saved_error'), 'error');
+            }
+        });
+        chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+            if (message.type === 'STORAGE_IMPORT_RESULT') {
+                if (message.success) {
+                    this.showMessage(chrome.i18n.getMessage('message_import_success'));
+                } else {
+                    this.showMessage(chrome.i18n.getMessage('message_import_fail'), 'error');
+                }
             }
         });
         this.settingsUI.remember_generated_random_password_into_history.addEventListener('change', (e) => {

@@ -95,6 +95,14 @@
         "message": "重置",
         "description": "Button of Reset"
     },
+    "button_export": {
+        "message": "匯出",
+        "description": "Button of Export"
+    },
+    "button_import": {
+        "message": "匯入",
+        "description": "Button of Import"
+    },
     "region_generated_password_label": {
         "message": "(生成的密碼)",
         "description": "Label of Generated Password"
@@ -150,6 +158,10 @@
     "nav_tab_history": {
         "message": "歷史記錄",
         "description": "History"
+    },
+    "nav_tab_export": {
+        "message": "匯出/匯入",
+        "description": "Export"
     },
     "nav_tab_about": {
         "message": "關於",
@@ -234,6 +246,22 @@
     "settings_options_max_history_description": {
         "message": "設定歷史紀錄的上限筆數，超過上限的紀錄將會被刪除。",
         "description": "Set the maximum number of history records. Records exceeding the limit will be deleted."
+    },
+    "export_import_description": {
+        "message": "匯出或匯入擴展的設定和歷史紀錄。",
+        "description": "Description for the export/import feature"
+    },
+    "export_remark": {
+        "message": "備註：匯出的資料是未加密的，請妥善保存。",
+        "description": "Label for export feature"
+    },
+    "message_import_success": {
+        "message": "匯入成功！",
+        "description": "Label for successful import"
+    },
+    "message_import_fail": {
+        "message": "匯入失敗！",
+        "description": "Label for import failure"
     },
     "message_version": {
         "message": "版本",

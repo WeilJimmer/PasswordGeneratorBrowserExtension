@@ -199,6 +199,18 @@
       text-decoration: underline;
     }
 
+    input,
+    input[type="text"],
+    input[type="password"],
+    textarea,
+    select {
+      background-color: var(--background-color);
+      border: 1px solid var(--border-color);
+      color: var(--text-color);
+      border-radius: 4px;
+      width: 100%;
+    }
+
     input[type="checkbox"] {
       accent-color: var(--active-color);
     }
@@ -302,6 +314,14 @@
         </svg>
         <span data-lang="nav_tab_history">History</span>
       </div>
+      <div class="nav-item" data-tab="export">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+          <polyline points="7 10 12 15 17 10"/>
+          <line x1="12" y1="15" x2="12" y2="3"/>
+        </svg>
+        <span data-lang="nav_tab_export">Export/Import</span>
+      </div>
       <div class="nav-item" data-tab="about">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
           <circle cx="12" cy="12" r="10"/>
@@ -403,12 +423,27 @@
         </table>
       </div>
 
+      <!-- export -->
+      <div id="export" class="tab-content">
+        <h2 data-lang="nav_tab_export">Export/Import</h2>
+        <p><span data-lang="export_import_description">Export/Import your settings and history.</span></p>
+        <button class="btn btn-primary" id="exportBtn" data-lang="button_export">Export</button>
+        <button class="btn btn-primary" id="importBtn" data-lang="button_import">Import</button>
+        <button class="btn btn-primary" id="copyBtn" data-lang="button_copy">Copy</button>
+        <button class="btn btn-primary" id="clearAllBtn" data-lang="button_clear_all">Clear All</button>
+        <input type="file" id="importFileInput" style="display:none;">
+        <hr>
+        <textarea id="importTextArea" rows="10"></textarea>
+        <hr>
+        <p><span data-lang="export_remark">Note: Exported data is not encrypted. Please keep it safe.</span></p>
+      </div>
+
       <!-- about -->
       <div id="about" class="tab-content">
         <h2 data-lang="nav_tab_about">About</h2>
         <p><span data-lang="message_version">Version</span>: <span id="versionSpan">1.0</span></p>
         <p><span data-lang="message_author">Author</span>: Weil Jimmer</p>
-        <p><span data-lang="message_website">Webstie</span>: <a href="https://weils.net/" target="_blank">https://weils.net/</a><br>　　 &nbsp;<a href="https://wbftw.org/" target="_blank">https://wbftw.org/</a></p>
+        <p><span data-lang="message_website">Website</span>: <a href="https://weils.net/" target="_blank">https://weils.net/</a><br> &nbsp; &nbsp; &nbsp; &nbsp; <a href="https://wbftw.org/" target="_blank">https://wbftw.org/</a></p>
         <p><span data-lang="message_source">Source</span>: <a id="sourceCodeLink" href="https://github.com/WeilJimmer/PasswordGeneratorBrowserExtension" target="_blank">(github) https://github.com/WeilJimmer/PasswordGeneratorBrowserExtension</a>
         <p><span id="descriptSpan">(description) Free, ad-free, open-source simple password generator.</span></p>
       </div>

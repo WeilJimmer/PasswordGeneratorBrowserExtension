@@ -95,6 +95,14 @@
         "message": "Reset",
         "description": "Button of Reset"
     },
+    "button_export": {
+        "message": "Export",
+        "description": "Button of Export"
+    },
+    "button_import": {
+        "message": "Import",
+        "description": "Button of Import"
+    },
     "region_generated_password_label": {
         "message": "(Generated Password)",
         "description": "Label of Generated Password"
@@ -150,6 +158,10 @@
     "nav_tab_history": {
         "message": "History",
         "description": "Navigation tab label for history page"
+    },
+    "nav_tab_export": {
+        "message": "Export/Import",
+        "description": "Navigation tab label for export page"
     },
     "nav_tab_about": {
         "message": "About",
@@ -234,6 +246,22 @@
     "settings_options_max_history_description": {
         "message": "Sets the maximum number of history records to keep. Older records will be deleted when this limit is reached.",
         "description": "Detailed explanation of maximum history records option"
+    },
+    "export_import_description": {
+        "message": "Export/Import your settings and history.",
+        "description": "Description for the export/import feature"
+    },
+    "export_remark": {
+        "message": "Note: Exported data is not encrypted. Please keep it safe.",
+        "description": "Label for export feature"
+    },
+    "message_import_success": {
+        "message": "Import Successful!",
+        "description": "Label for successful import"
+    },
+    "message_import_fail": {
+        "message": "Import Failed!",
+        "description": "Label for import failure"
     },
     "message_version": {
         "message": "Version",

@@ -124,6 +124,24 @@ export class StorageManager {
         return clone_ui_state.getPackedString(true);
     }
 
+    dumpAllStorage() {
+        return JSON.stringify(this.localStorageData)
+    }
+
+    async setDumpStorageData(json_string_value) {
+        try {
+            let data = JSON.parse(json_string_value);
+            data.t = this.packTimestamp();
+            await this.loadSettingsAndHistory(data);
+            await this.saveStorageToLocal();
+            await this.checkAndSync(true);
+            return true;
+        } catch (e) {
+            console.error('Error parsing JSON string: ', e);
+        }
+        return false;
+    }
+
     async loadStorage() {
         const local_data = await chrome.storage.local.get(null); // get all local data
         const cloud_data = await chrome.storage.sync.get(null);  // get all cloud data
@@ -174,6 +192,7 @@ export class StorageManager {
     async loadHistoryList(h) {
         let h_array = h.split(',');
         let h_count = 0;
+        this.history = [];
         for (let i = 0; i < h_array.length; i++) {
             this.history.push(new HistoryItem().unpackHistory(h_array[i]));
             h_count++;
