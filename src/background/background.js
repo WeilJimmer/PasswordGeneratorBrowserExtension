@@ -6,6 +6,7 @@
 import { PWG } from '../modules/password.js';
 import { HistoryItem } from '../modules/history.js';
 import { StorageManager } from '../modules/storage.js';
+import { buildCharset } from '../modules/strength.js';
 var stateManager = null;
 
 class StateManager {
@@ -38,7 +39,10 @@ class StateManager {
                 data: {
                     password: password,
                     checksum: checksum,
-                    need_copy: mode===2
+                    need_copy: mode===2,
+                    // generation parameters so the strength meter can score the
+                    // charset the generator ACTUALLY used (null on ERROR results)
+                    parameters: (checksum === 'ERROR') ? null : parameters
                 }
             });
         }catch(error){
@@ -122,21 +126,18 @@ class StateManager {
 
     async generatePassword(map, saved=false, mode=0) {
         let length = map.pwlength;
-        let symbols_char = map.symbols;
-        let numbers_checked = map.numbersChecked;
-        let symbols_checked = map.symbolsChecked;
-        let uppercase_checked = map.uppercaseChecked;
-        let lowercase_checked = map.lowercaseChecked;
-        if (!numbers_checked && !uppercase_checked && !lowercase_checked && !symbols_checked) {
+        if (!map.numbersChecked && !map.uppercaseChecked && !map.lowercaseChecked && !map.symbolsChecked) {
             this.sendPasswordResult('至少勾選一種類別', 'ERROR');
             return;
         }
-        let charset = '';
+        // Single source of truth for charset assembly (shared with the strength meter)
+        let charset = buildCharset(map);
         let password = '';
-        if (numbers_checked){ charset += '0123456789';}
-        if (uppercase_checked){ charset += 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';}
-        if (lowercase_checked){ charset += 'abcdefghijklmnopqrstuvwxyz';}
-        if (symbols_checked){ charset += symbols_char;}
+        if (charset.length === 0) {
+            // e.g. only symbols checked but the symbols field is empty
+            this.sendPasswordResult('字元集不可為空（請勾選英數字類別或填寫符號欄）', 'ERROR');
+            return;
+        }
 
         // Use rejection sampling to eliminate modulo bias
         // maxValid = largest multiple of charset.length that fits in 0-255
@@ -153,11 +154,6 @@ class StateManager {
     }
 
     async generateSlavePassword(map, saved=false, mode=0){
-        let uppercase_checked = map.uppercaseChecked;
-        let lowercase_checked = map.lowercaseChecked;
-        let numbers_checked = map.numbersChecked;
-        let symbols_checked = map.symbolsChecked;
-        let symbols_char = map.symbols;
         let version = map.version;
         let length = map.pwlength;
         let salt = map.salt;
@@ -166,11 +162,13 @@ class StateManager {
             this.sendPasswordResult('主密碼不可為空！', 'ERROR');
             return '';
         }
-        let charset = '';
-        if (numbers_checked){ charset += '0123456789';}
-        if (uppercase_checked){ charset += 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';}
-        if (lowercase_checked){ charset += 'abcdefghijklmnopqrstuvwxyz';}
-        if (symbols_checked){ charset += symbols_char;}
+        // Single source of truth for charset assembly (shared with the strength meter)
+        let charset = buildCharset(map);
+        if (charset.length === 0) {
+            // e.g. only symbols checked but the symbols field is empty
+            this.sendPasswordResult('字元集不可為空（請勾選英數字類別或填寫符號欄）', 'ERROR');
+            return '';
+        }
 
         const result = await PWG.generateSlavePassword(master_password, `${version}:${salt}`, charset, length);
 
@@ -362,6 +360,9 @@ if (stateManager === null) {
     console.log('init StateManager');
     stateManager = new StateManager();
 }
+
+// Named export for unit tests (background is a webpack entry; exports are inert there).
+export { StateManager };
 
 chrome.runtime.onInstalled.addListener(async (details) => {
     switch (details.reason) {
