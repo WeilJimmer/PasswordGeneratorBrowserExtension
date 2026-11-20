@@ -7,6 +7,7 @@ import '../modules/theme.js';
 import '../modules/heartbeat.js';
 import { SMW } from '../modules/state.js';
 import { UIStartUp } from '../modules/startup.js';
+import { evaluateStrength, crackTimeParts } from '../modules/strength.js';
 
 console.log('===== popup.js loaded =====', new Date().toISOString());
 
@@ -115,52 +116,47 @@ class PopupManager {
                 pw_element.value = message.data.password;
                 this.elements.checksumField.textContent = '['+message.data.checksum+']';
                 if (message.data.need_copy) this.copyPw();
-                // Update password strength meter
-                this.updateStrengthMeter(message.data.password);
+                // Update password strength meter — an ERROR result carries an
+                // error message, not a password: clear the meter, don't score it.
+                if (message.data.checksum === 'ERROR') {
+                    this.clearStrengthMeter();
+                } else {
+                    this.updateStrengthMeter(message.data.parameters, message.data.checksum);
+                }
             }
         });
     }
 
-    updateStrengthMeter(password) {
+    clearStrengthMeter() {
+        const meter = document.getElementById('strengthMeter');
+        const label = document.getElementById('strengthLabel');
+        const entropyText = document.getElementById('entropyText');
+        if (meter) {
+            meter.style.width = '0%';
+            meter.style.backgroundColor = '';
+        }
+        if (label) {
+            label.textContent = '';
+            label.style.color = '';
+        }
+        if (entropyText) entropyText.textContent = '';
+    }
+
+    updateStrengthMeter(parameters, checksum) {
         const meter = document.getElementById('strengthMeter');
         const label = document.getElementById('strengthLabel');
         const entropyText = document.getElementById('entropyText');
         if (!meter || !label) return;
 
-        // Calculate charset size directly from UI state (accurate!)
-        const charsetSize = this.getCharsetSize();
-        const length = password.length;
-        const entropy = length * Math.log2(charsetSize);
-
-        // Strength percentage based on entropy thresholds
-        let strength = 0;
-        if (entropy >= 15) strength = 15;
-        if (entropy >= 28) strength = 30;
-        if (entropy >= 40) strength = 50;
-        if (entropy >= 60) strength = 70;
-        if (entropy >= 80) strength = 85;
-        if (entropy >= 100) strength = 100;
-
-        // Determine strength level and color
-        let level, color;
-        if (strength < 30) {
-            level = 'weak';
-            color = '#ef4444';
-        } else if (strength < 50) {
-            level = 'fair';
-            color = '#f59e0b';
-        } else if (strength < 70) {
-            level = 'good';
-            color = '#3b82f6';
-        } else if (strength < 85) {
-            level = 'strong';
-            color = '#10b981';
-        } else {
-            level = 'excellent';
-            color = '#059669';
+        // Score the charset/length the generator ACTUALLY used (from background),
+        // not the popup's current checkbox state.
+        const result = evaluateStrength(parameters, checksum);
+        if (result == null) {
+            this.clearStrengthMeter();
+            return;
         }
+        const { entropy, level, percent, derived } = result;
 
-        // Translate level text
         const levelText = {
             'weak': this.i18n('strength_weak'),
             'fair': this.i18n('strength_fair'),
@@ -168,15 +164,29 @@ class PopupManager {
             'strong': this.i18n('strength_strong'),
             'excellent': this.i18n('strength_excellent'),
         };
+        const levelColor = {
+            'weak': '#ef4444',
+            'fair': '#f59e0b',
+            'good': '#3b82f6',
+            'strong': '#10b981',
+            'excellent': '#059669',
+        };
 
         // Update meter bar
-        meter.style.width = strength + '%';
-        meter.style.backgroundColor = color;
+        meter.style.width = percent + '%';
+        meter.style.backgroundColor = levelColor[level];
 
         // Update label with level + crack time estimate
-        const crackTime = this.estimateCrackTime(entropy);
-        label.style.color = color;
+        const crackTime = this.formatCrackTime(entropy);
+        label.style.color = levelColor[level];
         label.textContent = `${levelText[level]} · ${crackTime}`;
+
+        // Derived (HMAC) passwords are only as strong as the master password —
+        // the entropy shown is an upper bound of the character space, not the
+        // real search space. Say so, but only in derived mode.
+        if (derived) {
+            label.textContent += ` (${this.i18n('strength_derived_note')})`;
+        }
 
         // Update entropy text (i18n label + value)
         if (entropyText) {
@@ -185,40 +195,15 @@ class PopupManager {
     }
 
     /**
-     * Calculate charset size directly from UI state.
-     * This is the CORRECT way — we know exactly which character sets are enabled.
+     * Render crack time from pure parts (i18n unit keys), e.g. "3.2s", "> 1,000y".
      */
-    getCharsetSize() {
-        let size = 0;
-        if (this.elements.numbersCheckbox.checked) size += 10;
-        if (this.elements.uppercaseCheckbox.checked) size += 26;
-        if (this.elements.lowercaseCheckbox.checked) size += 26;
-        if (this.elements.symbolsCheckbox?.checked) {
-            const symbols = this.elements.symbolsCharField?.value || '';
-            // Fall back to default 32 symbols if user clears the field but keeps symbols enabled
-            size += symbols.length > 0 ? new Set(symbols).size : 32;
-        }
-        return size > 0 ? size : 1;
-    }
-
-    /**
-     * Estimate brute-force crack time based on entropy.
-     * Assumes 20 billion guesses/second (modern GPU).
-     * Uses logarithm math to avoid overflow on extreme entropy values.
-     */
-    estimateCrackTime(entropy) {
-        const guessesPerSecond = 20e9; // 20 billion/sec (modern GPU)
-        // log2(avg seconds) = entropy - log2(guessesPerSecond) - 1 (divide by 2 for average)
-        const log2Seconds = entropy - Math.log2(guessesPerSecond) - 1;
-
-        if (log2Seconds < Math.log2(0.001)) return `< 1ms`;
-        if (log2Seconds < Math.log2(1)) return `${Math.round(2 ** log2Seconds * 1000)}ms`;
-        if (log2Seconds < Math.log2(60)) return `${(2 ** log2Seconds).toFixed(1)}s`;
-        if (log2Seconds < Math.log2(3600)) return `${Math.round(2 ** log2Seconds / 60)}min`;
-        if (log2Seconds < Math.log2(86400)) return `${Math.round(2 ** log2Seconds / 3600)}h`;
-        if (log2Seconds < Math.log2(86400 * 365)) return `${Math.round(2 ** log2Seconds / 86400)}d`;
-        if (log2Seconds < Math.log2(86400 * 365 * 1000)) return `${(2 ** log2Seconds / 86400 / 365).toFixed(0)}y`;
-        return `> 1,000y`;
+    formatCrackTime(entropy) {
+        const parts = crackTimeParts(entropy);
+        if (parts.value === undefined) return this.i18n(parts.unit);
+        const num = Number.isInteger(parts.value)
+            ? parts.value.toLocaleString('en-US')
+            : parts.value.toFixed(1);
+        return `${num}${this.i18n(parts.unit)}`;
     }
 
     /**
@@ -243,6 +228,15 @@ class PopupManager {
             'strength_excellent': 'Excellent',
             'strength_entropy': 'Entropy',
             'strength_bits': 'bits',
+            'strength_derived_note': 'actual strength is no more than the master password',
+            'unit_ms': 'ms',
+            'unit_s': 's',
+            'unit_min': 'min',
+            'unit_h': 'h',
+            'unit_d': 'd',
+            'unit_y': 'y',
+            'crack_lt_1ms': '< 1ms',
+            'crack_gt_1000y': '> 1,000y',
         };
         return fallbacks[key] || key;
     }

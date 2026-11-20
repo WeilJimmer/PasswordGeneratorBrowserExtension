@@ -288,7 +288,7 @@
         "description": "Password strength level: Fair"
     },
     "strength_good": {
-        "message": "尚可",
+        "message": "良好",
         "description": "Password strength level: Good"
     },
     "strength_strong": {
@@ -304,7 +304,43 @@
         "description": "Label for entropy value display"
     },
     "strength_bits": {
-        "message": "位",
+        "message": "位元",
         "description": "Unit for entropy bits"
+    },
+    "unit_ms": {
+        "message": "毫秒",
+        "description": "時間單位：毫秒"
+    },
+    "unit_s": {
+        "message": "秒",
+        "description": "時間單位：秒"
+    },
+    "unit_min": {
+        "message": "分鐘",
+        "description": "時間單位：分鐘"
+    },
+    "unit_h": {
+        "message": "小時",
+        "description": "時間單位：小時"
+    },
+    "unit_d": {
+        "message": "天",
+        "description": "時間單位：天"
+    },
+    "unit_y": {
+        "message": "年",
+        "description": "時間單位：年"
+    },
+    "crack_lt_1ms": {
+        "message": "< 1毫秒",
+        "description": "破解時間少於 1 毫秒"
+    },
+    "crack_gt_1000y": {
+        "message": "> 1,000 年",
+        "description": "破解時間超過 1,000 年"
+    },
+    "strength_derived_note": {
+        "message": "實際強度不超過主密碼",
+        "description": "推導模式提示：強度上限來自主密碼"
     }
 }

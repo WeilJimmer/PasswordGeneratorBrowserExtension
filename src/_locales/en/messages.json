@@ -306,5 +306,41 @@
     "strength_bits": {
         "message": "bits",
         "description": "Unit for entropy bits"
+    },
+    "unit_ms": {
+        "message": "ms",
+        "description": "Time unit: milliseconds"
+    },
+    "unit_s": {
+        "message": "s",
+        "description": "Time unit: seconds"
+    },
+    "unit_min": {
+        "message": "min",
+        "description": "Time unit: minutes"
+    },
+    "unit_h": {
+        "message": "h",
+        "description": "Time unit: hours"
+    },
+    "unit_d": {
+        "message": "d",
+        "description": "Time unit: days"
+    },
+    "unit_y": {
+        "message": "y",
+        "description": "Time unit: years"
+    },
+    "crack_lt_1ms": {
+        "message": "< 1ms",
+        "description": "Crack time shorter than 1 millisecond"
+    },
+    "crack_gt_1000y": {
+        "message": "> 1,000y",
+        "description": "Crack time longer than 1000 years"
+    },
+    "strength_derived_note": {
+        "message": "actual strength is no more than the master password",
+        "description": "Note shown in derived (non-random) mode: strength bounded by master password"
     }
 }
