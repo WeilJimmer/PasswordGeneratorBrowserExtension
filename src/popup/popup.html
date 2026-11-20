@@ -136,17 +136,49 @@
       color: var(--secondary-text);
       font-family: 'Courier New', Courier, monospace;
     }
-    .strength-meter {
-      height: 4px;
-      border-radius: 2px;
+    .strength-section {
+      padding: 8px 10px;
+      background: var(--card-background);
+      border-radius: 6px;
+      border: 1px solid var(--border-color);
+    }
+    .strength-meter-wrapper {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .strength-meter-container {
+      flex: 1;
+      height: 6px;
       background: var(--border-color);
-      margin-top: 4px;
-      transition: width 0.3s, background-color 0.3s;
+      border-radius: 3px;
+      overflow: hidden;
+    }
+    .strength-meter {
+      height: 100%;
+      border-radius: 3px;
+      width: 0%;
+      transition: width 0.3s ease, background-color 0.3s ease;
     }
     .strength-label {
       font-size: 11px;
-      margin-top: 2px;
-      font-weight: bold;
+      font-weight: 600;
+      white-space: nowrap;
+      min-width: 80px;
+    }
+    .entropy-text {
+      font-size: 10px;
+      font-family: 'Courier New', Courier, monospace;
+      color: var(--secondary-text);
+      white-space: nowrap;
+    }
+    .derived-note {
+      display: none;
+      margin-top: 4px;
+      font-size: 10px;
+      color: var(--secondary-text);
+      white-space: normal;
+      word-break: break-word;
     }
     input,
     input[type="text"],
@@ -208,8 +240,16 @@
       </label>
       <input type="text" id="salt" local-placeholder="salt_placeholder" placeholder="salt_placeholder" style="width: 250px;" maxlength="10000">
     </div>
-    <div id="strengthMeter" class="strength-meter" style="width: 0%;"></div>
-    <div id="strengthLabel" class="strength-label"></div>
+    <div class="strength-section">
+      <div class="strength-meter-wrapper">
+        <div class="strength-meter-container">
+          <div id="strengthMeter" class="strength-meter"></div>
+        </div>
+        <span id="strengthLabel" class="strength-label"></span>
+        <span id="entropyText" class="entropy-text"></span>
+      </div>
+      <div id="derivedNote" class="derived-note"></div>
+    </div>
     <div class="password-container">
       <textarea class="password" id="password" local-value="region_generated_password_label" rows="4"></textarea>
       <input class="password" type="password" id="hide_password_input">

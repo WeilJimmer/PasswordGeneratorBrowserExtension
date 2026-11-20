@@ -7,6 +7,7 @@ import '../modules/theme.js';
 import '../modules/heartbeat.js';
 import { SMW } from '../modules/state.js';
 import { UIStartUp } from '../modules/startup.js';
+import { evaluateStrength, crackTimeParts } from '../modules/strength.js';
 
 console.log('===== popup.js loaded =====', new Date().toISOString());
 
@@ -115,54 +116,142 @@ class PopupManager {
                 pw_element.value = message.data.password;
                 this.elements.checksumField.textContent = '['+message.data.checksum+']';
                 if (message.data.need_copy) this.copyPw();
-                // Update password strength meter
-                this.updateStrengthMeter(message.data.password, message.data.checksum);
+                // Update password strength meter — an ERROR result carries an
+                // error message, not a password: clear the meter, don't score it.
+                if (message.data.checksum === 'ERROR') {
+                    this.clearStrengthMeter();
+                } else {
+                    this.updateStrengthMeter(message.data.parameters, message.data.checksum);
+                }
             }
         });
     }
 
-    updateStrengthMeter(password, checksum) {
+    clearStrengthMeter() {
         const meter = document.getElementById('strengthMeter');
         const label = document.getElementById('strengthLabel');
-        if (!meter || !label) return;
-
-        let strength = 0;
-        const length = password.length;
-        const charsetSize = new Set(password).size > 0 ? this.estimateCharsetSize(password) : 1;
-        const entropy = length * Math.log2(charsetSize);
-
-        if (entropy >= 20) strength = 25;
-        if (entropy >= 36) strength = 50;
-        if (entropy >= 60) strength = 75;
-        if (entropy >= 80) strength = 100;
-
-        meter.style.width = strength + '%';
-        if (strength <= 25) {
-            meter.style.backgroundColor = '#ef4444';
-            label.style.color = '#ef4444';
-            label.textContent = checksum === 'RANDOM' ? 'Weak' : 'Weak';
-        } else if (strength <= 50) {
-            meter.style.backgroundColor = '#f59e0b';
-            label.style.color = '#f59e0b';
-            label.textContent = checksum === 'RANDOM' ? 'Fair' : 'Fair';
-        } else if (strength <= 75) {
-            meter.style.backgroundColor = '#3b82f6';
-            label.style.color = '#3b82f6';
-            label.textContent = checksum === 'RANDOM' ? 'Good' : 'Good';
-        } else {
-            meter.style.backgroundColor = '#10b981';
-            label.style.color = '#10b981';
-            label.textContent = checksum === 'RANDOM' ? 'Strong' : 'Strong';
+        const entropyText = document.getElementById('entropyText');
+        const derivedNote = document.getElementById('derivedNote');
+        if (meter) {
+            meter.style.width = '0%';
+            meter.style.backgroundColor = '';
+        }
+        if (label) {
+            label.textContent = '';
+            label.style.color = '';
+        }
+        if (entropyText) entropyText.textContent = '';
+        if (derivedNote) {
+            derivedNote.textContent = '';
+            derivedNote.style.display = 'none';
         }
     }
 
-    estimateCharsetSize(password) {
-        let size = 0;
-        if (/[0-9]/.test(password)) size += 10;
-        if (/[a-z]/.test(password)) size += 26;
-        if (/[A-Z]/.test(password)) size += 26;
-        if (/[^0-9a-zA-Z]/.test(password)) size += 32;
-        return size > 0 ? size : 1;
+    updateStrengthMeter(parameters, checksum) {
+        const meter = document.getElementById('strengthMeter');
+        const label = document.getElementById('strengthLabel');
+        const entropyText = document.getElementById('entropyText');
+        if (!meter || !label) return;
+
+        // Score the charset/length the generator ACTUALLY used (from background),
+        // not the popup's current checkbox state.
+        const result = evaluateStrength(parameters, checksum);
+        if (result == null) {
+            this.clearStrengthMeter();
+            return;
+        }
+        const { entropy, level, percent, derived } = result;
+
+        const levelText = {
+            'weak': this.i18n('strength_weak'),
+            'fair': this.i18n('strength_fair'),
+            'good': this.i18n('strength_good'),
+            'strong': this.i18n('strength_strong'),
+            'excellent': this.i18n('strength_excellent'),
+        };
+        const levelColor = {
+            'weak': '#ef4444',
+            'fair': '#f59e0b',
+            'good': '#3b82f6',
+            'strong': '#10b981',
+            'excellent': '#059669',
+        };
+
+        // Update meter bar
+        meter.style.width = percent + '%';
+        meter.style.backgroundColor = levelColor[level];
+
+        // Update label with level + crack time estimate
+        const crackTime = this.formatCrackTime(entropy);
+        label.style.color = levelColor[level];
+        label.textContent = `${levelText[level]} · ${crackTime}`;
+
+        // Derived (HMAC) passwords are only as strong as the master password —
+        // the entropy shown is an upper bound of the character space, not the
+        // real search space. Say so on its own line (the label row is nowrap
+        // flex; appending here would squeeze the meter and overlap texts).
+        const derivedNote = document.getElementById('derivedNote');
+        if (derivedNote) {
+            if (derived) {
+                derivedNote.textContent = this.i18n('strength_derived_note');
+                derivedNote.style.display = 'block';
+            } else {
+                derivedNote.textContent = '';
+                derivedNote.style.display = 'none';
+            }
+        }
+
+        // Update entropy text (i18n label + value)
+        if (entropyText) {
+            entropyText.textContent = `${this.i18n('strength_entropy')}: ${entropy.toFixed(1)} ${this.i18n('strength_bits')}`;
+        }
+    }
+
+    /**
+     * Render crack time from pure parts (i18n unit keys), e.g. "3.2s", "> 1,000y".
+     */
+    formatCrackTime(entropy) {
+        const parts = crackTimeParts(entropy);
+        if (parts.value === undefined) return this.i18n(parts.unit);
+        const num = Number.isInteger(parts.value)
+            ? parts.value.toLocaleString('en-US')
+            : parts.value.toFixed(1);
+        return `${num}${this.i18n(parts.unit)}`;
+    }
+
+    /**
+     * Simple i18n helper for strength meter labels.
+     * Falls back to English if translation not found.
+     */
+    i18n(key) {
+        try {
+            const msg = chrome.i18n.getMessage(key);
+            return msg ? msg : this.i18nFallback(key);
+        } catch {
+            return this.i18nFallback(key);
+        }
+    }
+
+    i18nFallback(key) {
+        const fallbacks = {
+            'strength_weak': 'Weak',
+            'strength_fair': 'Fair',
+            'strength_good': 'Good',
+            'strength_strong': 'Strong',
+            'strength_excellent': 'Excellent',
+            'strength_entropy': 'Entropy',
+            'strength_bits': 'bits',
+            'strength_derived_note': 'actual strength is no more than the master password',
+            'unit_ms': 'ms',
+            'unit_s': 's',
+            'unit_min': 'min',
+            'unit_h': 'h',
+            'unit_d': 'd',
+            'unit_y': 'y',
+            'crack_lt_1ms': '< 1ms',
+            'crack_gt_1000y': '> 1,000y',
+        };
+        return fallbacks[key] || key;
     }
 
     getKeywordFromUrl(domain){
