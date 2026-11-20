@@ -30,6 +30,26 @@ export function charsetSize(charset) {
     return new Set([...charset]).size;
 }
 
+/**
+ * Per-character Shannon entropy of a charset WITH duplicates, in bits.
+ * The generator draws uniformly from the full charset string, so a character
+ * listed m times is m times as likely; deduplicating would overestimate.
+ *   N = charset.length, m_i = occurrences of the i-th distinct char
+ *   H = log2(N) - (1/N) * sum(m_i * log2(m_i))
+ * No duplicates -> H = log2(N) (identical to the old unique-count formula).
+ */
+export function perCharEntropy(charset) {
+    const n = charset.length;
+    if (n <= 1) return 0;
+    const counts = new Map();
+    for (const ch of charset) counts.set(ch, (counts.get(ch) || 0) + 1);
+    let reduction = 0;
+    for (const m of counts.values()) {
+        if (m > 1) reduction += m * Math.log2(m);
+    }
+    return Math.log2(n) - reduction / n;
+}
+
 /** Shannon entropy in bits for a uniformly drawn password. */
 export function calcEntropy(size, length) {
     if (!Number.isFinite(size) || !Number.isFinite(length)) return 0;
@@ -109,7 +129,9 @@ export function evaluateStrength(map, checksum) {
     const charset = buildCharset(map);
     const size = charsetSize(charset);
     const length = Number(map.pwlength) || 0;
-    const entropy = calcEntropy(size, length);
+    // Entropy accounts for duplicate chars in the charset (weighted draw),
+    // falling back to length * log2(size) when there are none.
+    const entropy = size > 1 && length > 0 ? perCharEntropy(charset) * length : 0;
     const { level, percent } = strengthLevel(entropy);
     return {
         entropy,

@@ -5,6 +5,7 @@
 import {
     buildCharset,
     charsetSize,
+    perCharEntropy,
     calcEntropy,
     strengthLevel,
     crackTimeParts,
@@ -55,9 +56,53 @@ describe('buildCharset', () => {
         expect(charsetSize(cs)).toBe(64);
     });
 
+    test('charset string itself KEEPS duplicates (generator must not dedup)', () => {
+        const map = makeMap({
+            numbersChecked: false, uppercaseChecked: false,
+            lowercaseChecked: true, symbols: 'aaaa!',
+        });
+        const cs = buildCharset(map);
+        expect(cs.length).toBe(31); // 26 lower + 'aaaa!' as-is
+        expect(charsetSize(cs)).toBe(27);
+    });
+
     test('unicode symbols counted per code point', () => {
         const map = makeMap({ symbols: '😀😁😀' });
         expect(charsetSize(buildCharset(map))).toBe(64); // +😀 +😁
+    });
+});
+
+describe('perCharEntropy (weighted draw over duplicates)', () => {
+    test('no duplicates falls back to log2(N)', () => {
+        const cs = buildCharset(makeMap()); // 79 unique chars
+        expect(perCharEntropy(cs)).toBeCloseTo(Math.log2(79), 10);
+    });
+
+    test('lowercase only + symbols "aaaa!": N=31, a drawn 5x -> ~4.58 bits/char, not 4.75', () => {
+        const map = makeMap({
+            numbersChecked: false, uppercaseChecked: false,
+            lowercaseChecked: true, symbols: 'aaaa!',
+        });
+        const cs = buildCharset(map);
+        expect(cs.length).toBe(31);
+        // unique-count formula would over-estimate: log2(27) = 4.7549
+        expect(Math.log2(charsetSize(cs))).toBeCloseTo(4.7549, 3);
+        // H = log2(31) - (5*log2(5) + 26*1*log2(1))/31 = 4.5797
+        expect(perCharEntropy(cs)).toBeCloseTo(4.5797, 3);
+    });
+
+    test('evaluateStrength uses the weighted entropy', () => {
+        const map = makeMap({
+            numbersChecked: false, uppercaseChecked: false,
+            lowercaseChecked: true, symbols: 'aaaa!', pwlength: 40,
+        });
+        const r = evaluateStrength(map, 'RANDOM');
+        expect(r.entropy).toBeCloseTo(4.5797 * 40, 1);
+    });
+
+    test('degenerate charsets return 0', () => {
+        expect(perCharEntropy('')).toBe(0);
+        expect(perCharEntropy('a')).toBe(0);
     });
 });
 
