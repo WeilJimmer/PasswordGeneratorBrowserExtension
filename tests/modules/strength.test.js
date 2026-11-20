@@ -6,7 +6,6 @@ import {
     buildCharset,
     charsetSize,
     perCharEntropy,
-    calcEntropy,
     strengthLevel,
     crackTimeParts,
     evaluateStrength,
@@ -66,9 +65,13 @@ describe('buildCharset', () => {
         expect(charsetSize(cs)).toBe(27);
     });
 
-    test('unicode symbols counted per code point', () => {
+    test('emoji counted per UTF-16 code unit (matching how the generator indexes)', () => {
+        // 😀 = D83D DE00, 😁 = D83D DE01 → 6 code units, 3 distinct (surrogate
+        // halves are what the generator can actually emit; base splits them too).
         const map = makeMap({ symbols: '😀😁😀' });
-        expect(charsetSize(buildCharset(map))).toBe(64); // +😀 +😁
+        const cs = buildCharset(map);
+        expect(cs.length).toBe(68); // 62 + 6 code units
+        expect(charsetSize(cs)).toBe(65); // +3 distinct code units
     });
 });
 
@@ -106,21 +109,25 @@ describe('perCharEntropy (weighted draw over duplicates)', () => {
     });
 });
 
-describe('calcEntropy', () => {
+describe('252.2-bit golden case (no duplicates => log2(N) path)', () => {
     test('four classes + 17 unique symbols + length 40 = 252.2 bits', () => {
         const map = makeMap({ symbols: '!@#$%^&*(){}[]=,.' }); // 17 distinct, no alnum overlap
         const cs = buildCharset(map);
         expect(charsetSize(cs)).toBe(79);
-        const e = calcEntropy(charsetSize(cs), map.pwlength);
-        expect(e.toFixed(1)).toBe('252.2');
+        expect(cs.length).toBe(79); // no duplicates
+        const r = evaluateStrength(map, 'RANDOM');
+        expect(r.entropy.toFixed(1)).toBe('252.2');
     });
 
-    test('degenerate sizes return 0', () => {
-        expect(calcEntropy(0, 40)).toBe(0);
-        expect(calcEntropy(1, 40)).toBe(0);
-        expect(calcEntropy(62, 0)).toBe(0);
+    test('empty charset scores 0 entropy', () => {
+        const map = makeMap({
+            numbersChecked: false, uppercaseChecked: false,
+            lowercaseChecked: false, symbols: '',
+        });
+        expect(evaluateStrength(map, 'RANDOM').entropy).toBe(0);
     });
 });
+
 
 describe('evaluateStrength', () => {
     test('checksum ERROR is not scored (returns null)', () => {

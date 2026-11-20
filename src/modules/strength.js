@@ -25,9 +25,10 @@ export function buildCharset(map) {
     return charset;
 }
 
-/** Unique character count of a charset string (unicode-safe). */
+/** Unique character count of a charset string (per UTF-16 code unit, matching
+ * how the generator indexes charset[index]). */
 export function charsetSize(charset) {
-    return new Set([...charset]).size;
+    return new Set(charset.split('')).size;
 }
 
 /**
@@ -42,19 +43,17 @@ export function perCharEntropy(charset) {
     const n = charset.length;
     if (n <= 1) return 0;
     const counts = new Map();
-    for (const ch of charset) counts.set(ch, (counts.get(ch) || 0) + 1);
+    // Count per UTF-16 code unit: the generator draws with charset[index],
+    // so duplicates must be tallied the same way the draw space is defined.
+    for (let i = 0; i < n; i++) {
+        const ch = charset[i];
+        counts.set(ch, (counts.get(ch) || 0) + 1);
+    }
     let reduction = 0;
     for (const m of counts.values()) {
         if (m > 1) reduction += m * Math.log2(m);
     }
     return Math.log2(n) - reduction / n;
-}
-
-/** Shannon entropy in bits for a uniformly drawn password. */
-export function calcEntropy(size, length) {
-    if (!Number.isFinite(size) || !Number.isFinite(length)) return 0;
-    if (size <= 1 || length <= 0) return 0;
-    return length * Math.log2(size);
 }
 
 /**
