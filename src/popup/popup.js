@@ -131,6 +131,7 @@ class PopupManager {
         const meter = document.getElementById('strengthMeter');
         const label = document.getElementById('strengthLabel');
         const entropyText = document.getElementById('entropyText');
+        const derivedNote = document.getElementById('derivedNote');
         if (meter) {
             meter.style.width = '0%';
             meter.style.backgroundColor = '';
@@ -140,6 +141,10 @@ class PopupManager {
             label.style.color = '';
         }
         if (entropyText) entropyText.textContent = '';
+        if (derivedNote) {
+            derivedNote.textContent = '';
+            derivedNote.style.display = 'none';
+        }
     }
 
     updateStrengthMeter(parameters, checksum) {
@@ -183,9 +188,17 @@ class PopupManager {
 
         // Derived (HMAC) passwords are only as strong as the master password —
         // the entropy shown is an upper bound of the character space, not the
-        // real search space. Say so, but only in derived mode.
-        if (derived) {
-            label.textContent += ` (${this.i18n('strength_derived_note')})`;
+        // real search space. Say so on its own line (the label row is nowrap
+        // flex; appending here would squeeze the meter and overlap texts).
+        const derivedNote = document.getElementById('derivedNote');
+        if (derivedNote) {
+            if (derived) {
+                derivedNote.textContent = this.i18n('strength_derived_note');
+                derivedNote.style.display = 'block';
+            } else {
+                derivedNote.textContent = '';
+                derivedNote.style.display = 'none';
+            }
         }
 
         // Update entropy text (i18n label + value)

@@ -172,6 +172,14 @@
       color: var(--secondary-text);
       white-space: nowrap;
     }
+    .derived-note {
+      display: none;
+      margin-top: 4px;
+      font-size: 10px;
+      color: var(--secondary-text);
+      white-space: normal;
+      word-break: break-word;
+    }
     input,
     input[type="text"],
     input[type="range"],
@@ -240,6 +248,7 @@
         <span id="strengthLabel" class="strength-label"></span>
         <span id="entropyText" class="entropy-text"></span>
       </div>
+      <div id="derivedNote" class="derived-note"></div>
     </div>
     <div class="password-container">
       <textarea class="password" id="password" local-value="region_generated_password_label" rows="4"></textarea>
